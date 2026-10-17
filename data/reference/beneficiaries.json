@@ -1,0 +1,5 @@
+[
+  {"beneficiary_id": "PROV-A", "name": "Proveedor Ficticio A", "country": "MX", "synthetic": true},
+  {"beneficiary_id": "PROV-B", "name": "Contratista Ficticio B", "country": "CO", "synthetic": true},
+  {"beneficiary_id": "PROV-N", "name": "Proveedor Nuevo Ficticio N", "country": "AR", "synthetic": true}
+]

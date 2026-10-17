@@ -1,0 +1,6 @@
+[
+  {"agreement_ref": "AC-A-001", "beneficiary_id": "PROV-A", "amount": "800.00",  "currency": "USD", "synthetic": true},
+  {"agreement_ref": "AC-A-002", "beneficiary_id": "PROV-A", "amount": "1500.00", "currency": "USD", "synthetic": true},
+  {"agreement_ref": "AC-B-001", "beneficiary_id": "PROV-B", "amount": "450.00",  "currency": "USD", "synthetic": true},
+  {"agreement_ref": "AC-N-001", "beneficiary_id": "PROV-N", "amount": "500.00",  "currency": "USD", "synthetic": true}
+]

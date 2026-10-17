@@ -1,0 +1,16 @@
+Blinka F2 - verificacion local en Windows
+Fecha: 2026-10-17
+Comando: .\.venv\Scripts\python.exe -m pytest -q
+
+Resultado:
+79 passed, 1 skipped in 3.31s
+
+El unico skip corresponde a tests/unit/test_paths_and_references.py:51:
+Windows no permite crear symlinks sin privilegios (WinError 1314). La prueba
+se conserva y corre cuando el entorno tiene esa capacidad.
+
+Cobertura F2 incluida:
+- PAGAR automatico con comparacion exacta contra acuerdo y presupuesto.
+- ESCALAR por umbral, beneficiario nuevo, dato faltante y moneda sin politica.
+- FRENAR por duplicado y discrepancia con el acuerdo.
+- Workflow ADK F2 sin LLM y con decision persistida y recuperada.

@@ -1,0 +1,88 @@
+# Evidencia F1: pytest -v (entorno reconstruido desde uv.lock)
+fecha: 2026-10-17T20:14:29Z
+python 3.10.12 | google-adk 2.11.0 | pydantic 2.14.1
+credenciales de Google en el entorno: GOOGLE_API_KEY=no GEMINI_API_KEY=no
+nota: SQLite se ejecuto fuera de la carpeta sincronizada (ver docs/guia-local-f0-f1.md)
+
+============================= test session starts ==============================
+platform linux -- Python 3.10.12, pytest-9.1.1, pluggy-1.7.0 -- /sessions/rcw-01k52bf3xuqjbfnc5z5juj6q/venvs/blinka-locked/bin/python
+cachedir: .pytest_cache
+rootdir: /sessions/rcw-01k52bf3xuqjbfnc5z5juj6q/mnt/30X-Blinka
+configfile: pyproject.toml
+testpaths: tests
+plugins: anyio-4.15.1
+collecting ... collected 71 items
+
+tests/integration/test_adk_workflow.py::test_workflow_is_made_only_of_function_nodes PASSED [  1%]
+tests/integration/test_adk_workflow.py::test_workflow_traverses_all_steps_and_ends_without_decision PASSED [  2%]
+tests/integration/test_adk_workflow.py::test_workflow_replay_and_conflict PASSED [  4%]
+tests/integration/test_adk_workflow.py::test_workflow_rejects_path_outside_authorized_directory PASSED [  5%]
+tests/integration/test_adk_workflow.py::test_workflow_with_instruction_in_invoice_has_no_decision PASSED [  7%]
+tests/integration/test_adk_workflow.py::test_workflow_invalid_request_is_a_rejection_not_a_success PASSED [  8%]
+tests/integration/test_intake_service.py::test_complete_invoice_keeps_original_and_normalizes_fields PASSED [  9%]
+tests/integration/test_intake_service.py::test_every_synthetic_invoice_matches_its_expectation[factura_acuerdo_inexistente.txt] PASSED [ 11%]
+tests/integration/test_intake_service.py::test_every_synthetic_invoice_matches_its_expectation[factura_completa.txt] PASSED [ 12%]
+tests/integration/test_intake_service.py::test_every_synthetic_invoice_matches_its_expectation[factura_fecha_invalida.txt] PASSED [ 14%]
+tests/integration/test_intake_service.py::test_every_synthetic_invoice_matches_its_expectation[factura_importe_invalido.txt] PASSED [ 15%]
+tests/integration/test_intake_service.py::test_every_synthetic_invoice_matches_its_expectation[factura_mismo_cobro_reingreso.txt] PASSED [ 16%]
+tests/integration/test_intake_service.py::test_every_synthetic_invoice_matches_its_expectation[factura_sin_vencimiento.txt] PASSED [ 18%]
+tests/integration/test_intake_service.py::test_every_synthetic_invoice_matches_its_expectation[factura_texto_instruccion.txt] PASSED [ 19%]
+tests/integration/test_intake_service.py::test_every_invoice_file_has_an_expectation PASSED [ 21%]
+tests/integration/test_intake_service.py::test_missing_field_keeps_the_rest_and_reports_it PASSED [ 22%]
+tests/integration/test_intake_service.py::test_invalid_amount_and_date_are_not_silently_converted PASSED [ 23%]
+tests/integration/test_intake_service.py::test_unknown_agreement_is_an_issue_and_no_agreement_is_invented PASSED [ 25%]
+tests/integration/test_intake_service.py::test_policy_and_references_are_loaded_with_versions_and_ids PASSED [ 26%]
+tests/integration/test_intake_service.py::test_data_survives_a_restart_without_process_state PASSED [ 28%]
+tests/integration/test_intake_service.py::test_data_survives_in_separate_os_processes PASSED [ 29%]
+tests/integration/test_intake_service.py::test_same_key_same_content_returns_same_record_without_duplicating PASSED [ 30%]
+tests/integration/test_intake_service.py::test_same_key_different_content_is_an_explicit_conflict_and_keeps_original PASSED [ 32%]
+tests/integration/test_intake_service.py::test_concurrent_retries_of_one_key_create_a_single_record PASSED [ 33%]
+tests/integration/test_intake_service.py::test_new_entry_for_the_same_charge_stays_distinguishable PASSED [ 35%]
+tests/integration/test_intake_service.py::test_instruction_inside_invoice_changes_nothing_and_yields_no_decision PASSED [ 36%]
+tests/integration/test_intake_service.py::test_conflicting_override_attempt_in_notes_is_ambiguous_not_obeyed PASSED [ 38%]
+tests/integration/test_intake_service.py::test_fields_come_from_content_not_from_the_file_name PASSED [ 39%]
+tests/integration/test_intake_service.py::test_unparseable_text_is_kept_with_issues_instead_of_failing PASSED [ 40%]
+tests/integration/test_intake_service.py::test_non_utf8_bytes_are_preserved_losslessly PASSED [ 42%]
+tests/integration/test_intake_service.py::test_receipt_never_carries_a_decision_or_llm_or_money_for_any_invoice PASSED [ 43%]
+tests/integration/test_intake_service.py::test_agent_code_does_not_read_expectations PASSED [ 45%]
+tests/unit/test_paths_and_references.py::test_path_outside_directory_is_rejected_without_reading_it PASSED [ 46%]
+tests/unit/test_paths_and_references.py::test_symlink_escaping_the_directory_is_rejected PASSED [ 47%]
+tests/unit/test_paths_and_references.py::test_only_txt_inside_directory_and_missing_file PASSED [ 49%]
+tests/unit/test_paths_and_references.py::test_allowed_relative_and_absolute_paths_work PASSED [ 50%]
+tests/unit/test_paths_and_references.py::test_oversized_file_rejected PASSED [ 52%]
+tests/unit/test_paths_and_references.py::test_policy_and_references_load_with_identifiers_and_versions PASSED [ 53%]
+tests/unit/test_paths_and_references.py::test_invalid_policy_is_refused[override0] PASSED [ 54%]
+tests/unit/test_paths_and_references.py::test_invalid_policy_is_refused[override1] PASSED [ 56%]
+tests/unit/test_paths_and_references.py::test_invalid_policy_is_refused[override2] PASSED [ 57%]
+tests/unit/test_paths_and_references.py::test_broken_reference_file_is_a_configuration_error PASSED [ 59%]
+tests/unit/test_validation.py::test_amount_is_strict[800.00-value0-None] PASSED [ 60%]
+tests/unit/test_validation.py::test_amount_is_strict[800-value1-None] PASSED [ 61%]
+tests/unit/test_validation.py::test_amount_is_strict[1,500.00-value2-None] PASSED [ 63%]
+tests/unit/test_validation.py::test_amount_is_strict[1000.01-value3-None] PASSED [ 64%]
+tests/unit/test_validation.py::test_amount_is_strict[1.500,00-None-INVALID_AMOUNT] PASSED [ 66%]
+tests/unit/test_validation.py::test_amount_is_strict[800,00-None-INVALID_AMOUNT] PASSED [ 67%]
+tests/unit/test_validation.py::test_amount_is_strict[ochocientos-None-INVALID_AMOUNT] PASSED [ 69%]
+tests/unit/test_validation.py::test_amount_is_strict[8OO.00-None-INVALID_AMOUNT] PASSED [ 70%]
+tests/unit/test_validation.py::test_amount_is_strict[800.005-None-INVALID_AMOUNT] PASSED [ 71%]
+tests/unit/test_validation.py::test_amount_is_strict[-None-INVALID_AMOUNT] PASSED [ 73%]
+tests/unit/test_validation.py::test_amount_is_strict[0.00-value10-NON_POSITIVE_AMOUNT] PASSED [ 74%]
+tests/unit/test_validation.py::test_amount_is_strict[-5.00-value11-NON_POSITIVE_AMOUNT] PASSED [ 76%]
+tests/unit/test_validation.py::test_date_only_unambiguous_iso[2026-10-25-expected0] PASSED [ 77%]
+tests/unit/test_validation.py::test_date_only_unambiguous_iso[2026-02-30-None] PASSED [ 78%]
+tests/unit/test_validation.py::test_date_only_unambiguous_iso[25/10/2026-None] PASSED [ 80%]
+tests/unit/test_validation.py::test_date_only_unambiguous_iso[03/04/2026-None] PASSED [ 81%]
+tests/unit/test_validation.py::test_date_only_unambiguous_iso[2026-1-5-None] PASSED [ 83%]
+tests/unit/test_validation.py::test_date_only_unambiguous_iso[-None] PASSED [ 84%]
+tests/unit/test_validation.py::test_currency[usd-USD] PASSED             [ 85%]
+tests/unit/test_validation.py::test_currency[ MXN -MXN] PASSED           [ 87%]
+tests/unit/test_validation.py::test_currency[US-None] PASSED             [ 88%]
+tests/unit/test_validation.py::test_currency[USDX-None] PASSED           [ 90%]
+tests/unit/test_validation.py::test_currency[12$-None] PASSED            [ 91%]
+tests/unit/test_validation.py::test_labels_ignore_case_and_accents_and_unknown_labels PASSED [ 92%]
+tests/unit/test_validation.py::test_parser_keeps_textual_evidence_with_line_numbers PASSED [ 94%]
+tests/unit/test_validation.py::test_missing_and_empty_fields_are_reported_not_invented PASSED [ 95%]
+tests/unit/test_validation.py::test_conflicting_duplicate_label_is_ambiguous_and_not_resolved PASSED [ 97%]
+tests/unit/test_validation.py::test_same_value_repeated_is_not_ambiguous PASSED [ 98%]
+tests/unit/test_validation.py::test_non_positive_amount_is_flagged PASSED [100%]
+
+============================== 71 passed in 2.93s ==============================
