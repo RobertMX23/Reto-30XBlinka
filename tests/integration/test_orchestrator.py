@@ -1,6 +1,7 @@
 """Pruebas del coordinador multiagente y sus contratos deterministas."""
 
 import asyncio
+import json
 
 from google.adk.runners import InMemoryRunner
 from google.genai import types
@@ -59,3 +60,18 @@ def test_orchestrator_adk_workflow_runs_from_plain_user_message(service, monkeyp
     final = events[-1].output
     assert final["state"] == "READY_FOR_DECISION"
     assert final["receipt"]["fields"]["invoice_number"] == "ORCH-001"
+
+
+def test_orchestrator_adk_workflow_runs_decision_when_requested(service, monkeypatch):
+    monkeypatch.setenv("BLINKA_DB_PATH", str(service._settings.db_path))
+
+    async def run():
+        runner = InMemoryRunner(agent=root_agent, app_name="blinka-orchestrator-decision-test")
+        session = await runner.session_service.create_session(app_name="blinka-orchestrator-decision-test", user_id="test")
+        request = {"content": _invoice(), "origin": "CHAT", "run_decision": True}
+        message = types.Content(role="user", parts=[types.Part(text=json.dumps(request))])
+        return [event async for event in runner.run_async(user_id="test", session_id=session.id, new_message=message)]
+
+    final = asyncio.run(run())[-1].output
+    assert final["state"] == "PAGAR"
+    assert final["decision"]["moves_money"] is False

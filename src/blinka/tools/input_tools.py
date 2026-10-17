@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Any
 
@@ -21,7 +22,12 @@ def classify_input(value: Any) -> InputRequest:
         text = value
         if hasattr(value, "parts"):
             text = "".join(getattr(part, "text", "") or "" for part in value.parts)
-        request = InputRequest(content=str(text or ""), origin="CHAT")
+        raw_text = str(text or "")
+        try:
+            decoded = json.loads(raw_text)
+        except json.JSONDecodeError:
+            decoded = None
+        request = InputRequest.model_validate(decoded) if isinstance(decoded, dict) else InputRequest(content=raw_text, origin="CHAT")
     if request.source_type is None:
         if request.path:
             request = request.model_copy(update={"source_type": SourceType.TXT_FILE})
