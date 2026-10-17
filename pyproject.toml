@@ -12,6 +12,7 @@ dependencies = [
     "google-adk>=2.11,<3",
     "pydantic>=2.7",
     "python-dotenv>=1.0",
+    "pypdf>=5,<7",
 ]
 
 [project.scripts]

@@ -32,6 +32,10 @@ class WorkflowState(str, Enum):
     FRENAR = "FRENAR"
     ESCALAR = "ESCALAR"
     NEEDS_REVIEW = "NEEDS_REVIEW"
+    WAITING_HUMAN_APPROVAL = "WAITING_HUMAN_APPROVAL"
+    HUMAN_APPROVED = "HUMAN_APPROVED"
+    HUMAN_REJECTED = "HUMAN_REJECTED"
+    NEEDS_MORE_INFORMATION = "NEEDS_MORE_INFORMATION"
     REJECTED = "REJECTED"
     FAILED = "FAILED"
     COMPLETED = "COMPLETED"
@@ -61,6 +65,7 @@ class InputIssue(BaseModel):
 
 
 class OrchestrationResult(BaseModel):
+    contract_version: str = "1.0"
     request_id: Optional[str] = None
     state: WorkflowState
     source_type: Optional[SourceType] = None

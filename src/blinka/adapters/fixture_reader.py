@@ -25,6 +25,7 @@ from blinka.domain.models import ExtractionCandidate, RawField, SourceDocument
 from blinka.errors import PathNotAllowedError, SourceNotFoundError, SourceTooLargeError
 
 ALLOWED_SUFFIX = ".txt"
+PDF_SUFFIX = ".pdf"
 
 _LABELS: Dict[str, str] = {
     "beneficiario": "beneficiary",
@@ -56,7 +57,9 @@ def parse_labeled_invoice(text: str) -> ExtractionCandidate:
     return ExtractionCandidate(fields=fields)
 
 
-def resolve_allowed_path(invoices_dir: Path, root: Path, requested: Union[str, Path]) -> Path:
+def resolve_allowed_path(
+    invoices_dir: Path, root: Path, requested: Union[str, Path], *, allowed_suffixes: tuple[str, ...] = (ALLOWED_SUFFIX,)
+) -> Path:
     """Valida la ruta ANTES de abrirla. Rutas relativas se interpretan desde la raiz del repositorio."""
     base = invoices_dir.resolve()
     candidate = Path(requested)
@@ -65,8 +68,9 @@ def resolve_allowed_path(invoices_dir: Path, root: Path, requested: Union[str, P
     resolved = candidate.resolve()  # sigue enlaces simbolicos; no lee contenido
     if resolved != base and base not in resolved.parents:
         raise PathNotAllowedError("La ruta queda fuera del directorio de facturas autorizado.")
-    if resolved.suffix.lower() != ALLOWED_SUFFIX:
-        raise PathNotAllowedError(f"Solo se admiten archivos {ALLOWED_SUFFIX}.")
+    if resolved.suffix.lower() not in allowed_suffixes:
+        allowed = ", ".join(allowed_suffixes)
+        raise PathNotAllowedError(f"Solo se admiten archivos {allowed}.")
     return resolved
 
 
@@ -86,6 +90,43 @@ def read_source_file(
     data = path.read_bytes()
     origin = path.relative_to(invoices_dir.resolve()).as_posix()
     return build_source(data, origin=origin, ingest_key=ingest_key or f"file:{origin}")
+
+
+def read_pdf_text_file(
+    invoices_dir: Path,
+    root: Path,
+    requested: Union[str, Path],
+    *,
+    max_bytes: int,
+    ingest_key: str | None = None,
+) -> SourceDocument:
+    """Lee un PDF con texto y conserva los bytes originales y su huella."""
+    path = resolve_allowed_path(invoices_dir, root, requested, allowed_suffixes=(PDF_SUFFIX,))
+    if not path.is_file():
+        raise SourceNotFoundError("El PDF solicitado no existe dentro del directorio autorizado.")
+    if path.stat().st_size > max_bytes:
+        raise SourceTooLargeError(f"El archivo excede {max_bytes} bytes.")
+    data = path.read_bytes()
+    try:
+        from pypdf import PdfReader
+    except ImportError as exc:
+        raise RuntimeError("El adaptador PDF requiere la dependencia pypdf.") from exc
+    try:
+        reader = PdfReader(path)
+        text = "\n".join((page.extract_text() or "") for page in reader.pages).strip()
+    except Exception as exc:
+        raise ValueError(f"No se pudo leer el PDF: {exc}") from exc
+    if not text:
+        raise ValueError("El PDF no contiene texto extraíble; requiere OCR.")
+    origin = path.relative_to(invoices_dir.resolve()).as_posix()
+    return SourceDocument(
+        ingest_key=ingest_key or f"file:{origin}",
+        origin=origin,
+        text=text,
+        encoding="utf-8",
+        sha256=hashlib.sha256(data).hexdigest(),
+        byte_length=len(data),
+    )
 
 
 def build_source(data: bytes, *, origin: str, ingest_key: str) -> SourceDocument:

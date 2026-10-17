@@ -13,7 +13,7 @@ from typing import List, Optional
 from pydantic import BaseModel, ConfigDict, model_validator
 
 from blinka.application.decision import DecisionService
-from blinka.adapters.fixture_reader import build_source, parse_labeled_invoice, read_source_file
+from blinka.adapters.fixture_reader import build_source, parse_labeled_invoice, read_pdf_text_file, read_source_file
 from blinka.config import Settings
 from blinka.domain.models import (
     ExtractionResult,
@@ -67,6 +67,14 @@ class IntakeService:
         except ValueError as exc:
             raise InvalidRequestError(str(exc)) from exc
         if req.path is not None:
+            if req.path.lower().endswith(".pdf"):
+                return read_pdf_text_file(
+                    self._settings.invoices_dir,
+                    self._settings.root,
+                    req.path,
+                    max_bytes=self._settings.max_source_bytes,
+                    ingest_key=req.ingest_key,
+                )
             return read_source_file(
                 self._settings.invoices_dir,
                 self._settings.root,
