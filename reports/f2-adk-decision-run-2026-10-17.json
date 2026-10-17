@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-17",
+  "workflow": "agents.blinka_agent.decision_agent.root_agent",
+  "runner": "google.adk.runners.InMemoryRunner",
+  "nodes": ["evaluate_decision", "recover_decision"],
+  "llm_used": false,
+  "moves_money": false,
+  "input": {
+    "intake_id": "INT-9626427D9209"
+  },
+  "decision": {
+    "decision": "PAGAR",
+    "authorization": "AUTOMATICA",
+    "policy_version": "DEMO-v1",
+    "period": "2026-10",
+    "amount": "800.00",
+    "currency": "USD",
+    "committed_before": "0",
+    "available_after": "9200.00",
+    "explanation_prefix": "Aprobado para pago simulado"
+  }
+}

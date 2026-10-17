@@ -1,0 +1,11 @@
+{
+  "version": "DEMO-v1",
+  "company": "Empresa Demo 30X (ficticia)",
+  "operating_currency": "USD",
+  "period": "2026-10",
+  "auto_threshold": "1000.00",
+  "max_per_invoice": "3000.00",
+  "period_budget": "10000.00",
+  "allowed_beneficiaries": ["PROV-A", "PROV-B"],
+  "synthetic": true
+}

@@ -1,0 +1,26 @@
+# Entornos virtuales
+.venv/
+venv/
+env/
+
+# Datos locales de ejecucion (SQLite)
+var/
+*.db
+*.sqlite
+*.sqlite3
+
+# Credenciales y configuracion local (nunca versionar)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+service-account*.json
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+build/
+dist/

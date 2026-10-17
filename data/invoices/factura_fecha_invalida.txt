@@ -1,0 +1,7 @@
+FACTURA (DATOS FICTICIOS)
+Beneficiario: PROV-B
+Numero de factura: B-015
+Importe: 450.00
+Moneda: USD
+Vencimiento: 2026-02-30
+Acuerdo: AC-B-001

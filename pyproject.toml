@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "blinka"
+version = "0.1.0"
+description = "Demo Blinka (datos ficticios): agente programatico de cuentas por pagar con ADK 2.x. Fases F0/F1."
+readme = "docs/guia-local-f0-f1.md"
+requires-python = ">=3.10"
+dependencies = [
+    "google-adk>=2.11,<3",
+    "pydantic>=2.7",
+    "python-dotenv>=1.0",
+]
+
+[project.scripts]
+blinka = "blinka.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "."]
+addopts = "-ra"

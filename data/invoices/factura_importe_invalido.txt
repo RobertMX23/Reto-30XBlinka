@@ -1,0 +1,7 @@
+FACTURA (DATOS FICTICIOS)
+Beneficiario: PROV-A
+Numero de factura: A-003
+Importe: 1.500,00
+Moneda: USD
+Vencimiento: 2026-10-28
+Acuerdo: AC-A-002

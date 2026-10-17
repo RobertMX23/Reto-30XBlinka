@@ -139,3 +139,24 @@ Principio de diseño: **las reglas deciden, el LLM asiste.** El modelo ayuda a l
 - [x] Repositorio creado y flujo de lectura/escritura/PR validado.
 - [x] README con la descripción del proyecto.
 - [ ] Implementación del agente (ver próximos pasos).
+Segunda validación (Claude Code): se leyó el README existente, se editó localmente y se actualiza el PR abierto.
+
+## Análisis del reto y especificación del demo
+
+- [Enunciado del reto](docs/reto-blinka-enunciado.md).
+- [Análisis sección por sección, rol e instrucciones, límites, tablas cruzadas, comparativas y rankings](docs/reto-blinka-especificacion-demo.md).
+- [Arquitectura del demo en Google Cloud, ADK, datos y contrato de APIs](docs/reto-blinka-arquitectura-gcp.md).
+- [Fases de desarrollo y madurez del agente ADK](docs/reto-blinka-fases-adk.md).
+- [Prompt de implementación del scaffold determinista: F0 y F1](docs/prompts/scaffold-determinista-adk.md).
+- [Guía local F0/F1/F2 y comandos CLI](docs/guia-local-f0-f1.md).
+- [Registro de madurez y evidencia ejecutada](docs/registro-madurez.md).
+
+Estado comprobado al 17 de octubre de 2026: F0/F1 y el núcleo F2 están implementados y verificados localmente con ADK sin LLM; la pantalla, la aprobación humana y el despliegue GCP siguen pendientes.
+
+## Pantalla local
+
+La vista dividida está en `frontend/`: muestra la interfaz de ADK a la izquierda y el chat operativo a la derecha.
+
+1. Inicia ADK: `uv run adk web --host 0.0.0.0 --port 8000 agents`.
+2. Sirve `frontend/` en otro puerto, por ejemplo: `python -m http.server 8080 --directory frontend`.
+3. Abre `http://localhost:8080`.

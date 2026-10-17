@@ -1,0 +1,300 @@
+{
+  "nota": "Ejecucion real del workflow ADK (solo funciones). Sin credenciales ni llamadas a un modelo.",
+  "nodos_del_grafo": [
+    "BaseNode:__START__",
+    "FunctionNode:read_source",
+    "FunctionNode:parse_and_validate",
+    "FunctionNode:load_references",
+    "FunctionNode:save_intake",
+    "FunctionNode:recover_receipt"
+  ],
+  "ejecuciones": [
+    {
+      "solicitud": {
+        "path": "data/invoices/factura_completa.txt"
+      },
+      "nodos_recorridos": [
+        "blinka_intake@1/read_source@1",
+        "blinka_intake@1/parse_and_validate@1",
+        "blinka_intake@1/load_references@1",
+        "blinka_intake@1/save_intake@1",
+        "blinka_intake@1/recover_receipt@1"
+      ],
+      "salida_final": {
+        "ingest_outcome": "CREATED",
+        "receipt": {
+          "intake_id": "INT-9626427D9209",
+          "revision": 1,
+          "processing_status": "REGISTRADA",
+          "source": {
+            "ingest_key": "file:factura_completa.txt",
+            "origin": "factura_completa.txt",
+            "sha256": "1c948053bc7ec0e67f435f29e60cd91bcbbd7e63ccf170840fa16c250ce7f466",
+            "byte_length": 186,
+            "encoding": "utf-8"
+          },
+          "fields": {
+            "beneficiary_id": "PROV-A",
+            "invoice_number": "A-001",
+            "amount": "800.00",
+            "currency": "USD",
+            "due_date": "2026-10-25",
+            "agreement_ref": "AC-A-001"
+          },
+          "raw_fields": {
+            "beneficiary": [
+              "PROV-A"
+            ],
+            "invoice_number": [
+              "A-001"
+            ],
+            "amount": [
+              "800.00"
+            ],
+            "currency": [
+              "USD"
+            ],
+            "due_date": [
+              "2026-10-25"
+            ],
+            "agreement_ref": [
+              "AC-A-001"
+            ]
+          },
+          "issues": [],
+          "references": {
+            "policy_version": "DEMO-v1",
+            "policy_sha256": "dd18248a6356458e0bf2a1fb5807fb042587ec56a4b7c9b83ac9396acf534b08",
+            "beneficiary": {
+              "requested_id": "PROV-A",
+              "found": true,
+              "record": {
+                "beneficiary_id": "PROV-A",
+                "name": "Proveedor Ficticio A",
+                "country": "MX",
+                "synthetic": true
+              }
+            },
+            "agreement": {
+              "requested_id": "AC-A-001",
+              "found": true,
+              "record": {
+                "agreement_ref": "AC-A-001",
+                "beneficiary_id": "PROV-A",
+                "amount": "800.00",
+                "currency": "USD",
+                "synthetic": true
+              }
+            }
+          },
+          "policy_version": "DEMO-v1",
+          "business_key": "PROV-A|A-001",
+          "earlier_intake_ids": [],
+          "created_at": "2026-10-17T20:14:33.863264Z",
+          "decision": null,
+          "llm_used": false,
+          "moves_money": false
+        }
+      }
+    },
+    {
+      "solicitud": {
+        "path": "data/invoices/factura_completa.txt"
+      },
+      "nodos_recorridos": [
+        "blinka_intake@1/read_source@1",
+        "blinka_intake@1/parse_and_validate@1",
+        "blinka_intake@1/load_references@1",
+        "blinka_intake@1/save_intake@1",
+        "blinka_intake@1/recover_receipt@1"
+      ],
+      "salida_final": {
+        "ingest_outcome": "REPLAYED",
+        "receipt": {
+          "intake_id": "INT-9626427D9209",
+          "revision": 1,
+          "processing_status": "REGISTRADA",
+          "source": {
+            "ingest_key": "file:factura_completa.txt",
+            "origin": "factura_completa.txt",
+            "sha256": "1c948053bc7ec0e67f435f29e60cd91bcbbd7e63ccf170840fa16c250ce7f466",
+            "byte_length": 186,
+            "encoding": "utf-8"
+          },
+          "fields": {
+            "beneficiary_id": "PROV-A",
+            "invoice_number": "A-001",
+            "amount": "800.00",
+            "currency": "USD",
+            "due_date": "2026-10-25",
+            "agreement_ref": "AC-A-001"
+          },
+          "raw_fields": {
+            "beneficiary": [
+              "PROV-A"
+            ],
+            "invoice_number": [
+              "A-001"
+            ],
+            "amount": [
+              "800.00"
+            ],
+            "currency": [
+              "USD"
+            ],
+            "due_date": [
+              "2026-10-25"
+            ],
+            "agreement_ref": [
+              "AC-A-001"
+            ]
+          },
+          "issues": [],
+          "references": {
+            "policy_version": "DEMO-v1",
+            "policy_sha256": "dd18248a6356458e0bf2a1fb5807fb042587ec56a4b7c9b83ac9396acf534b08",
+            "beneficiary": {
+              "requested_id": "PROV-A",
+              "found": true,
+              "record": {
+                "beneficiary_id": "PROV-A",
+                "name": "Proveedor Ficticio A",
+                "country": "MX",
+                "synthetic": true
+              }
+            },
+            "agreement": {
+              "requested_id": "AC-A-001",
+              "found": true,
+              "record": {
+                "agreement_ref": "AC-A-001",
+                "beneficiary_id": "PROV-A",
+                "amount": "800.00",
+                "currency": "USD",
+                "synthetic": true
+              }
+            }
+          },
+          "policy_version": "DEMO-v1",
+          "business_key": "PROV-A|A-001",
+          "earlier_intake_ids": [],
+          "created_at": "2026-10-17T20:14:33.863264Z",
+          "decision": null,
+          "llm_used": false,
+          "moves_money": false
+        }
+      }
+    },
+    {
+      "solicitud": {
+        "path": "data/invoices/factura_sin_vencimiento.txt"
+      },
+      "nodos_recorridos": [
+        "blinka_intake@1/read_source@1",
+        "blinka_intake@1/parse_and_validate@1",
+        "blinka_intake@1/load_references@1",
+        "blinka_intake@1/save_intake@1",
+        "blinka_intake@1/recover_receipt@1"
+      ],
+      "salida_final": {
+        "ingest_outcome": "CREATED",
+        "receipt": {
+          "intake_id": "INT-0E4B0834FDC8",
+          "revision": 1,
+          "processing_status": "REGISTRADA_CON_INCIDENCIAS",
+          "source": {
+            "ingest_key": "file:factura_sin_vencimiento.txt",
+            "origin": "factura_sin_vencimiento.txt",
+            "sha256": "832f3124255ce9e5c96dd6d9f6c79287c7c340a71f55d539aaa77a9e9ddf0454",
+            "byte_length": 118,
+            "encoding": "utf-8"
+          },
+          "fields": {
+            "beneficiary_id": "PROV-B",
+            "invoice_number": "B-014",
+            "amount": "450.00",
+            "currency": "USD",
+            "due_date": null,
+            "agreement_ref": "AC-B-001"
+          },
+          "raw_fields": {
+            "beneficiary": [
+              "PROV-B"
+            ],
+            "invoice_number": [
+              "B-014"
+            ],
+            "amount": [
+              "450.00"
+            ],
+            "currency": [
+              "USD"
+            ],
+            "agreement_ref": [
+              "AC-B-001"
+            ]
+          },
+          "issues": [
+            {
+              "field": "due_date",
+              "code": "MISSING_FIELD",
+              "message": "Falta el campo 'vencimiento'.",
+              "raw_value": null
+            }
+          ],
+          "references": {
+            "policy_version": "DEMO-v1",
+            "policy_sha256": "dd18248a6356458e0bf2a1fb5807fb042587ec56a4b7c9b83ac9396acf534b08",
+            "beneficiary": {
+              "requested_id": "PROV-B",
+              "found": true,
+              "record": {
+                "beneficiary_id": "PROV-B",
+                "name": "Contratista Ficticio B",
+                "country": "CO",
+                "synthetic": true
+              }
+            },
+            "agreement": {
+              "requested_id": "AC-B-001",
+              "found": true,
+              "record": {
+                "agreement_ref": "AC-B-001",
+                "beneficiary_id": "PROV-B",
+                "amount": "450.00",
+                "currency": "USD",
+                "synthetic": true
+              }
+            }
+          },
+          "policy_version": "DEMO-v1",
+          "business_key": "PROV-B|B-014",
+          "earlier_intake_ids": [],
+          "created_at": "2026-10-17T20:14:33.920396Z",
+          "decision": null,
+          "llm_used": false,
+          "moves_money": false
+        }
+      }
+    },
+    {
+      "solicitud": {
+        "path": "README.md"
+      },
+      "nodos_recorridos": [
+        "blinka_intake@1/read_source@1",
+        "blinka_intake@1/parse_and_validate@1",
+        "blinka_intake@1/load_references@1",
+        "blinka_intake@1/save_intake@1",
+        "blinka_intake@1/recover_receipt@1"
+      ],
+      "salida_final": {
+        "error": {
+          "code": "PATH_NOT_ALLOWED",
+          "kind": "REJECTED",
+          "message": "La ruta queda fuera del directorio de facturas autorizado."
+        }
+      }
+    }
+  ]
+}

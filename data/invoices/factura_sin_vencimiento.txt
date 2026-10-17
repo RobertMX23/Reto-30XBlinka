@@ -1,0 +1,6 @@
+FACTURA (DATOS FICTICIOS)
+Beneficiario: PROV-B
+Numero de factura: B-014
+Importe: 450.00
+Moneda: USD
+Acuerdo: AC-B-001
