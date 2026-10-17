@@ -27,3 +27,11 @@ Segunda validación (Claude Code): se leyó el README existente, se editó local
 - [Registro de madurez y evidencia ejecutada](docs/registro-madurez.md).
 
 Estado comprobado al 17 de octubre de 2026: F0/F1 y el núcleo F2 están implementados y verificados localmente con ADK sin LLM; la pantalla, la aprobación humana y el despliegue GCP siguen pendientes.
+
+## Pantalla local
+
+La vista dividida está en `frontend/`: muestra la interfaz de ADK a la izquierda y el chat operativo a la derecha.
+
+1. Inicia ADK: `uv run adk web --host 0.0.0.0 --port 8000 agents`.
+2. Sirve `frontend/` en otro puerto, por ejemplo: `python -m http.server 8080 --directory frontend`.
+3. Abre `http://localhost:8080`.

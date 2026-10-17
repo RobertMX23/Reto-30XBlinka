@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#08111f" />
+    <title>Blinka · Centro de operaciones</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div class="brand-lockup"><div class="brand-mark">B</div><div><div class="eyebrow">30X · CUENTAS POR PAGAR</div><h1>Blinka <span>Control room</span></h1></div></div>
+        <div class="topbar-status"><span class="status-dot"></span> Entorno local <strong>F1 / F2</strong></div>
+      </header>
+      <section class="workspace" aria-label="Centro de operaciones de Blinka">
+        <section class="panel adk-panel" aria-label="Interfaz de Agent Development Kit">
+          <div class="panel-heading"><div><div class="eyebrow">AGENT DEVELOPMENT KIT</div><h2>Flujo del agente</h2></div><span class="pill live"><span class="status-dot"></span> ADK conectado</span></div>
+          <div class="adk-frame-wrap"><iframe id="adk-frame" title="Interfaz de Google ADK" src="http://localhost:8000" loading="lazy"></iframe><div id="adk-fallback" class="frame-fallback" hidden><div class="fallback-icon">↗</div><h3>La interfaz ADK aún no está abierta</h3><p>Arranca el servidor ADK en el puerto 8000 y recarga esta página.</p><code>uv run adk web --host 0.0.0.0 --port 8000 agents</code><a href="http://localhost:8000" target="_blank" rel="noreferrer">Abrir ADK en otra pestaña</a></div></div>
+        </section>
+        <section class="panel chat-panel" aria-label="Chat con Blinka">
+          <div class="panel-heading chat-heading"><div><div class="eyebrow">ASISTENTE BLINKA</div><h2>Chat operativo</h2></div><button class="icon-button" id="clear-chat" title="Limpiar conversación" aria-label="Limpiar conversación">↺</button></div>
+          <div class="conversation" id="conversation" aria-live="polite"><div class="message message-bot"><div class="avatar bot-avatar">B</div><div class="message-content"><span class="message-author">Blinka <small>ahora</small></span><p>Hola, soy Blinka. Puedo revisar una factura, validar referencias o consultar el estado de un ingreso.</p></div></div><div class="quick-actions" aria-label="Acciones rápidas"><button data-prompt="Resume el estado de la última factura">Estado de la última factura</button><button data-prompt="¿Qué facturas tienen incidencias?">Ver incidencias</button><button data-prompt="Explícame el flujo de ingreso">Explicar el flujo</button></div></div>
+          <form class="composer" id="chat-form"><label class="sr-only" for="chat-input">Escribe un mensaje</label><textarea id="chat-input" rows="1" placeholder="Escribe a Blinka…" autocomplete="off"></textarea><button class="send-button" type="submit" aria-label="Enviar mensaje">↑</button></form><div class="composer-note"><span>●</span> Respuestas locales · sin movimientos de dinero</div>
+        </section>
+      </section>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>
