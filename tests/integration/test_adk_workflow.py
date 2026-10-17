@@ -79,8 +79,21 @@ def test_workflow_invalid_request_is_a_rejection_not_a_success():
     async def _run():
         runner = InMemoryRunner(agent=root_agent, app_name="blinka-test")
         session = await runner.session_service.create_session(app_name="blinka-test", user_id="t")
-        message = types.Content(role="user", parts=[types.Part(text="no soy json")])
+        message = types.Content(role="user", parts=[types.Part(text="[]")])
         return [e async for e in runner.run_async(user_id="t", session_id=session.id, new_message=message)]
 
     final = asyncio.run(_run())[-1].output
     assert final["error"]["code"] == "INVALID_REQUEST"
+
+
+def test_workflow_accepts_plain_invoice_text_from_adk_ui():
+    text = """Beneficiario: PROV-A
+Numero de factura: F-PLAIN
+Importe: 800.00
+Moneda: MXN
+Vencimiento: 2026-12-20
+Acuerdo: AGR-001"""
+    events = run_workflow({"text": text})
+    final = events[-1].output
+    assert final["receipt"]["fields"]["invoice_number"] == "F-PLAIN"
+    assert final["receipt"]["processing_status"] in {"REGISTRADA", "REGISTRADA_CON_INCIDENCIAS"}

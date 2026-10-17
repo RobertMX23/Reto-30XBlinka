@@ -25,7 +25,7 @@ def _error(exc: BlinkaError) -> dict:
 
 
 def _request_from_input(node_input: Any) -> dict:
-    """El mensaje de usuario es un JSON: {"path": ...} o {"text": ...}, con "ingest_key" opcional."""
+    """Acepta JSON estructurado o texto plano de factura desde la UI de ADK."""
     if isinstance(node_input, dict):
         return node_input
     if isinstance(node_input, str):
@@ -36,8 +36,8 @@ def _request_from_input(node_input: Any) -> dict:
         raise InvalidRequestError("Entrada no reconocida.")
     try:
         data = json.loads(text)
-    except json.JSONDecodeError as exc:
-        raise InvalidRequestError(f"La solicitud debe ser JSON ({{'path': ...}} o {{'text': ...}}): {exc}") from exc
+    except json.JSONDecodeError:
+        return {"text": text}
     if not isinstance(data, dict):
         raise InvalidRequestError("La solicitud debe ser un objeto JSON.")
     return data
