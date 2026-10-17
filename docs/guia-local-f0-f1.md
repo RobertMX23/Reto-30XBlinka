@@ -46,6 +46,12 @@ La decisión se guarda dentro del recibo con reglas, evidencia, razones, versió
 
 Para probar el agente con la interfaz de desarrollo de ADK (opcional): `uv run adk web agents`.
 
+## Orquestador multiagente determinista
+
+El agente `blinka_orchestrator` coordina la entrada y, opcionalmente, la decisión F2. En esta primera etapa admite `TEXT` y `TXT_FILE`; `PDF_TEXT`, `PDF_SCAN`, `IMAGE`, `EMAIL` y `EMAIL_ATTACHMENT` se rechazan de forma explícita hasta que se incorporen sus adaptadores.
+
+El orquestador conserva las invariantes del servicio existente: idempotencia, recibo recuperable, decisiones explicables y `moves_money: false`. Sus tools de clasificación y conservación están en `src/blinka/tools/` y sus contratos de tipos y estados en `src/blinka/domain/input_models.py`.
+
 ## Configuración
 
 Variables en `.env` (copiar `.env.example`; no contiene secretos): `BLINKA_INVOICES_DIR`, `BLINKA_REFERENCE_DIR`, `BLINKA_DB_PATH`.
