@@ -41,8 +41,14 @@ def test_orchestrator_can_chain_deterministic_decision(service, monkeypatch):
     assert result["decision"]["moves_money"] is False
 
 
-def test_orchestrator_rejects_unimplemented_source_type():
+def test_orchestrator_requires_path_for_pdf_text():
     result = nodes.classify_source({"source_type": "PDF_TEXT", "filename": "invoice.pdf"})
+    assert result["state"] == WorkflowState.CLASSIFIED
+    assert result["issues"][0]["code"] == "PATH_REQUIRED"
+
+
+def test_orchestrator_rejects_unimplemented_scanned_pdf():
+    result = nodes.classify_source({"source_type": "PDF_SCAN", "path": "invoice.pdf"})
     assert result["state"] == WorkflowState.CLASSIFIED
     assert result["issues"][0]["code"] == "SOURCE_TYPE_UNSUPPORTED"
 
