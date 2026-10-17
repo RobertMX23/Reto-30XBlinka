@@ -9,6 +9,9 @@
 - [Cómo funciona el agente](#cómo-funciona-el-agente)
 - [Diagrama de flujo](#diagrama-de-flujo)
 - [Reglas de ejemplo](#reglas-de-ejemplo)
+- [Arquitectura propuesta](#arquitectura-propuesta)
+- [Roadmap / próximos pasos](#roadmap--próximos-pasos)
+- [Seguridad](#seguridad)
 - [Estado actual](#estado-actual)
 
 ## El problema
@@ -98,6 +101,38 @@ aprobadores:
   - nombre: "Responsable de finanzas"
     canal: email
 ```
+
+## Arquitectura propuesta
+
+> **Propuesta / próximos pasos.** Nada de esto está implementado todavía; es el plan inicial y puede cambiar.
+
+| Componente | Responsabilidad | Stack propuesto |
+|---|---|---|
+| Ingesta | Leer cuentas (PDF, XML/CFDI, CSV o API) y normalizarlas | Python, `pydantic` para el modelo de datos |
+| Motor de reglas | Evaluar cada cuenta contra `reglas.yaml` de forma determinista | Python, `PyYAML` |
+| Agente (LLM) | Extraer datos de documentos poco estructurados y redactar el resumen y el motivo para el aprobador | API de un modelo de lenguaje vía variables de entorno |
+| Aprobación humana | Enviar casos escalados y recibir la respuesta (aprobar / rechazar / pedir info) | Email o chat; interfaz web sencilla (p. ej. FastAPI) |
+| Pagos | Ejecutar o programar los pagos aprobados | Simulado al inicio; integración real después |
+| Auditoría | Guardar cada decisión con sus reglas y motivos | SQLite al inicio, luego PostgreSQL |
+
+Principio de diseño: **las reglas deciden, el LLM asiste.** El modelo ayuda a leer documentos y a explicar, pero la decisión de pagar se toma con reglas deterministas y auditables, y todo lo dudoso se escala a una persona.
+
+## Roadmap / próximos pasos
+
+1. **MVP local:** modelo de datos de cuenta, carga de `reglas.yaml`, motor de reglas y decisiones pagar / escalar / rechazar sobre cuentas de ejemplo en CSV.
+2. **Auditoría:** registro de cada decisión en SQLite y reporte simple.
+3. **Aprobación humana:** flujo de escalamiento con aprobación / rechazo.
+4. **Ingesta con IA:** extracción de datos desde PDF/XML con un LLM y validación de los campos.
+5. **Pagos:** integración con un proveedor de pagos o banco (inicialmente en modo simulado).
+6. **Pruebas y despliegue:** pruebas automatizadas de las reglas y CI.
+
+## Seguridad
+
+- **Secretos en variables de entorno:** las llaves de API (LLM, pagos, email) nunca se suben al repositorio; se usa un archivo `.env` local ignorado por git y un `.env.example` sin valores reales.
+- **Mínimo privilegio:** cada integración usa credenciales con los permisos mínimos necesarios (por ejemplo, tokens de GitHub de grano fino limitados a este repositorio, y llaves de pago restringidas).
+- **Nada se paga sin regla o sin persona:** cualquier caso fuera de las reglas requiere aprobación humana explícita.
+- **Trazabilidad:** el registro de auditoría permite revisar quién o qué decidió cada pago y por qué.
+- **Datos sensibles:** los datos bancarios y de facturas se tratan como confidenciales y no se registran completos en logs.
 
 ## Estado actual
 
