@@ -60,5 +60,7 @@ def process_and_persist_batch(request: BatchRequest, processor: ItemProcessor, s
     existing = store.get(request.batch_id)
     if existing is not None and existing.state in {BatchState.COMPLETED, BatchState.COMPLETED_WITH_ERRORS}:
         return existing
-    store.create(request)
+    created = store.create(request)
+    processing = created.model_copy(update={"state": BatchState.PROCESSING})
+    store.save(processing)
     return store.save(process_batch(request, processor))
