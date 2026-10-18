@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import Any
+from datetime import datetime, timezone
 from blinka.domain.review_models import HumanReview, ReviewDecision
 from blinka.errors import StorageError
 
@@ -25,6 +26,6 @@ class FirestoreReviewStore:
     def decide(self, review_id: str, decision: ReviewDecision, decided_by: str, reason: str | None = None) -> HumanReview:
         review=self.get(review_id)
         if review is None: raise KeyError(review_id)
-        updated=review.model_copy(update={"decision": decision, "state": "PAGAR" if decision == ReviewDecision.APPROVE else "FRENAR", "decided_by": decided_by, "reason": reason or review.reason})
+        updated=review.model_copy(update={"decision": decision, "state": "PAGAR" if decision == ReviewDecision.APPROVE else "FRENAR", "decided_by": decided_by, "decided_at": datetime.now(timezone.utc), "reason": reason or review.reason})
         self._collection().document(review_id).set(updated.model_dump(mode="json"))
         return updated
