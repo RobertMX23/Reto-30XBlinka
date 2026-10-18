@@ -80,6 +80,7 @@ class OrchestrationResult(BaseModel):
     state: WorkflowState
     source_type: Optional[SourceType] = None
     intake_id: Optional[str] = None
+    ingest_outcome: Optional[str] = None
     receipt: Optional[dict[str, Any]] = None
     decision: Optional[dict[str, Any]] = None
     issues: list[InputIssue] = Field(default_factory=list)

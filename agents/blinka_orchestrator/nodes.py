@@ -106,6 +106,7 @@ def audit_result(node_input: dict[str, Any]) -> dict[str, Any]:
         state=WorkflowState(node_input.get("state", WorkflowState.COMPLETED)),
         source_type=node_input.get("request", {}).get("source_type"),
         intake_id=node_input.get("intake_id"),
+        ingest_outcome=node_input.get("ingest_outcome"),
         receipt=node_input.get("receipt"),
         decision=node_input.get("decision"),
         events=node_input.get("events", []),
