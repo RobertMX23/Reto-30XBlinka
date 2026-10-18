@@ -74,8 +74,9 @@ def test_orchestrator_adk_workflow_runs_from_plain_user_message(service, monkeyp
 
     events = asyncio.run(run())
     final = events[-1].output
-    assert final["state"] == "READY_FOR_DECISION"
+    assert final["state"] == "PAGAR"
     assert final["receipt"]["fields"]["invoice_number"] == "ORCH-001"
+    assert final["decision"]["moves_money"] is False
 
 
 def test_orchestrator_adk_workflow_runs_decision_when_requested(service, monkeypatch):
