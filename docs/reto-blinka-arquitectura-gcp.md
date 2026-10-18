@@ -1,6 +1,6 @@
 # Demo Blinka en línea: arquitectura GCP y contrato de APIs
 
-Fecha de consulta técnica: 17 de octubre de 2026. Estado: propuesta de arquitectura; sin recursos creados, despliegue ni pruebas de nube ejecutadas.
+Fecha de consulta técnica: 18 de octubre de 2026. Estado: arquitectura implementada parcialmente; Cloud Build y los servicios Cloud Run tienen un despliegue exitoso documentado. Las pruebas funcionales completas siguen pendientes.
 
 ## 1. Decisión propuesta
 
@@ -229,8 +229,8 @@ No se necesita una arquitectura multiagente para demostrar el flujo. Un agente c
 
 ## 12. Resultado de esta etapa y datos pendientes de infraestructura
 
-**Obtenido:** arquitectura propuesta, alternativas de hosting, separación de datos, inventario de APIs, contrato de rutas y controles para concurrencia. Se consultó documentación oficial actual.
+**Obtenido:** arquitectura de referencia, implementación del contenedor, trigger de GitHub, compilación en Cloud Build, imagen en Artifact Registry y despliegue de `blinka-api`, `blinka-worker` y `blinka-adk` en Cloud Run. Se consultó documentación oficial actual.
 
-**No obtenido todavía:** proyecto provisionado, APIs habilitadas, código implementado, URL publicada, conexión a Drive/BigQuery o pruebas ejecutadas en Google Cloud.
+**No obtenido todavía:** pruebas funcionales completas de API, pantalla, Gemini, PDF/OCR, Drive o BigQuery; tampoco se han registrado como conjunto los 22 casos funcionales ni los smoke tests posteriores al despliegue.
 
-Para concretar el despliegue faltan el ID del proyecto existente o la elección de uno nuevo, su asociación de facturación, el presupuesto de infraestructura y la lista de invitados. La modalidad de acceso controlado ya está confirmada. Región y modelo se eligen verificando disponibilidad conjunta en ese proyecto. No se requieren claves ni contraseñas pegadas en una conversación.
+El despliegue actual usa el proyecto `blinka-30x-2026`, la región `us-central1` y cuentas de servicio administradas para Cloud Build y Cloud Run. La modalidad de acceso controlado ya está confirmada. Quedan por cerrar los smoke tests, la lista definitiva de invitados, el endurecimiento de IAM y la conexión opcional a Drive/BigQuery. No se requieren claves ni contraseñas pegadas en una conversación.

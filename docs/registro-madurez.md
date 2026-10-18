@@ -1,6 +1,6 @@
 # Registro de madurez de Blinka
 
-Última actualización: 2026-10-17. Las etiquetas M0–M5 son una clasificación del proyecto, no una escala oficial.
+Última actualización: 2026-10-18. Las etiquetas M0–M5 son una clasificación del proyecto, no una escala oficial.
 Una fase se marca **verificada** solo con evidencia ejecutada y enlazada.
 
 | Fase | Madurez | Estado | Evidencia |
@@ -10,7 +10,7 @@ Una fase se marca **verificada** solo con evidencia ejecutada y enlazada.
 | F2 | M2 decisión bajo reglas | **Verificada (núcleo)** | [pytest F2 en Windows](../reports/f2-pytest-windows-2026-10-17.txt), [corrida ADK F2](../reports/f2-adk-decision-run-2026-10-17.json) |
 | F3 | M3 excepciones controladas | Pendiente | — |
 | F4 | M4 lectura asistida por modelo | Pendiente | — |
-| F5 | M5 demo en línea | Pendiente | — |
+| F5 | M5 demo en línea | **Parcialmente verificada** (Cloud Build y Cloud Run) | [Know-how del despliegue](know-how-iam-cloud-build-cloud-run.md), build `587fd4ca-c923-4a29-9490-6011085b7559` |
 
 ## Qué se comprobó en F0/F1
 
@@ -24,7 +24,7 @@ Una fase se marca **verificada** solo con evidencia ejecutada y enlazada.
 
 - **Cobertura completa de decisiones.** Las 22 pruebas T01–T22 de `docs/reto-blinka-especificacion-demo.md` todavía no se ejecutaron como conjunto; F2 cubre ahora los casos base y deja F3 para aprobaciones humanas.
 - **SQLite en carpeta sincronizada.** En ese entorno SQLite falló dentro de la carpeta del proyecto (`disk I/O error`); las pruebas y evidencias usaron un disco local. No es un problema del código, pero tampoco se verificó el comportamiento en la carpeta del usuario.
-- **Concurrencia entre máquinas, Firestore, API, pantalla, Gemini, PDF/OCR, Drive, BigQuery y GCP:** no existen aún.
+- **Pruebas funcionales completas en Firestore, API, pantalla, Gemini, PDF/OCR, Drive y BigQuery:** no existen aún como conjunto; el pipeline de GCP y los servicios Cloud Run sí tienen una compilación exitosa documentada.
 - La integración con `adk web` solo se comprobó hasta el descubrimiento del agente (`/list-apps` devolvió `blinka_agent`); no se ejecutó una conversación desde esa interfaz.
 
 ## Discrepancias relevantes entre documentos

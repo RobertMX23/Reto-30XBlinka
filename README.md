@@ -76,11 +76,12 @@ Los casos escalados se consultan con `GET /reviews` y se resuelven con `POST /re
 - Prueba de lote: **30/30 documentos completados**, sin fallos.
 - Prueba concurrente: **3 lotes simultáneos completados** sin pérdida de documentos.
 - Prueba HITL en Cloud Run: revisión creada para un caso escalado y decisión humana persistida.
-- Despliegues activos: API, worker y ADK Web en `us-central1`.
+- Despliegue confirmado por Cloud Build `587fd4ca-c923-4a29-9490-6011085b7559`: API, worker y ADK Web en `us-central1`; quedan smoke tests funcionales posteriores.
 - T12 (auditoría avanzada) queda pendiente para una fase posterior; no bloquea el demo.
 
 ## Contratos y documentación
 
+- [Know-how de IAM, Cloud Build y Cloud Run](docs/know-how-iam-cloud-build-cloud-run.md)
 - [Contrato de seguimiento y alcance](docs/contrato-seguimiento-blinka.md)
 - [Contratos del workflow](docs/contratos-workflow.md)
 - [Arquitectura GCP y ADK](docs/reto-blinka-arquitectura-gcp.md)
@@ -106,7 +107,7 @@ No se deben guardar claves en Git. En Cloud Run se usan cuentas de servicio y Ap
 
 ## Estado del proyecto
 
-El demo end to end está desplegado y listo para evaluación técnica. El siguiente bloque de producto es completar un panel visual de revisiones humanas y después endurecer autenticación, auditoría y OCR para producción.
+La infraestructura de compilación y los tres servicios Cloud Run están desplegados. El siguiente checkpoint es ejecutar smoke tests sobre API, worker y ADK Web; después siguen el endurecimiento de autenticación, auditoría, IAM y OCR para producción.
 
 ## Agente compatible con Visual Builder
 

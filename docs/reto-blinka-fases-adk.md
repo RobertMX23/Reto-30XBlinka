@@ -1,6 +1,6 @@
 # Blinka: fases de desarrollo y madurez del agente ADK
 
-Estado: diseño de implementación con F0/F1 y el núcleo F2 ejecutados localmente. F3–F5 siguen siendo etapas de evolución.
+Estado: F0/F1 y el núcleo F2 ejecutados localmente; la infraestructura de F5 (Cloud Build y Cloud Run) ya tiene un despliegue exitoso documentado. F3, F4 y las pruebas funcionales completas de F5 siguen siendo etapas de evolución.
 
 ## 1. Orden de construcción
 
@@ -42,7 +42,7 @@ Las etiquetas M0–M5 son una clasificación propuesta para este proyecto; no pe
 | F4 | M4: lectura asistida por modelo | Extrae campos de texto libre y los valida | Nodo de extracción con modelo; mismas reglas posteriores | Solo extracción; explicación opcional | Extracción comparada con evidencia; errores o ambigüedades no autoaprueban |
 | F5 | M5: demo en línea para invitados | API, pantalla, Firestore, acceso y despliegue | Agente en Agent Runtime; aplicación en Cloud Run | Papel limitado de F4 | URL utilizable por invitados; historial durable; pruebas funcionales y de concurrencia |
 
-F0, F1 y el núcleo F2 tienen evidencia local documentada. F3–F5 siguen **sin verificar**. Crear carpetas no demuestra M0; un import correcto no demuestra M1; una respuesta del modelo no demuestra M2.
+F0, F1 y el núcleo F2 tienen evidencia local documentada. F3 y F4 siguen **sin verificar**; F5 tiene verificada la infraestructura de compilación y despliegue, pero todavía requiere smoke tests y pruebas funcionales completas. Crear carpetas no demuestra M0; un import correcto no demuestra M1; una respuesta del modelo no demuestra M2.
 
 ### F0. Estructura y contratos
 
@@ -96,6 +96,19 @@ El motor determinista y las pruebas de F2/F3 permanecen. La temperatura del mode
 Cambiar el adaptador local por Firestore sin mover las reglas al modelo. Añadir la API, pantalla y acceso de invitados ya definidos en la arquitectura GCP. Comprobar nuevamente transacciones, reintentos y aislamiento sobre el almacenamiento y entorno desplegados; las pruebas de SQLite no demuestran el comportamiento distribuido.
 
 Drive y BigQuery siguen siendo conectores opcionales. No bloquear la primera publicación por esas integraciones.
+
+#### Checkpoint de despliegue F5 — 18 de octubre de 2026
+
+- [x] Repositorio GitHub conectado al trigger `blinka-main-deploy`.
+- [x] Construcción de la imagen y publicación en Artifact Registry.
+- [x] Permisos `iam.serviceAccounts.actAs` configurados para Cloud Build.
+- [x] `blinka-api`, `blinka-worker` y `blinka-adk` desplegados en `us-central1`.
+- [x] Compilación `587fd4ca-c923-4a29-9490-6011085b7559` finalizada con cinco pasos en verde.
+- [x] Worker y ADK sirviendo sus revisiones al 100 % del tráfico.
+- [ ] Smoke tests de API, worker y ADK Web.
+- [ ] Pruebas funcionales completas, concurrencia y aislamiento en Firestore.
+
+La evidencia detallada está en el [know-how de IAM, Cloud Build y Cloud Run](know-how-iam-cloud-build-cloud-run.md).
 
 ## 4. Grafo inicial y evolución
 
