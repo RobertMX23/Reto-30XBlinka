@@ -1,0 +1,10 @@
+.git
+.venv
+.uv-cache
+var
+*.db
+*.sqlite
+.env
+tests
+frontend
+README*.md

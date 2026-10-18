@@ -82,3 +82,9 @@ def serve(host: str = "0.0.0.0", port: int = 8090, db_path: Path | None = None) 
     path = db_path or Settings.from_env().db_path
     server = ThreadingHTTPServer((host, port), make_handler(path))
     server.serve_forever()
+
+
+if __name__ == "__main__":
+    import os
+
+    serve(port=int(os.environ.get("PORT", "8080")))
