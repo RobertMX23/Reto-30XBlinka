@@ -25,6 +25,8 @@ class Settings:
     max_extracted_text_bytes: int = DEFAULT_MAX_EXTRACTED_TEXT_BYTES
     memory_backend: str = "local"
     memory_rag_corpus: str | None = None
+    storage_backend: str = "local"
+    firestore_collection: str = "batches"
 
     @classmethod
     def from_env(
@@ -52,4 +54,6 @@ class Settings:
             max_extracted_text_bytes=int(env.get("BLINKA_MAX_EXTRACTED_TEXT_BYTES") or DEFAULT_MAX_EXTRACTED_TEXT_BYTES),
             memory_backend=(env.get("BLINKA_MEMORY_BACKEND") or "local").lower(),
             memory_rag_corpus=env.get("BLINKA_MEMORY_RAG_CORPUS"),
+            storage_backend=(env.get("BLINKA_STORAGE_BACKEND") or "local").lower(),
+            firestore_collection=env.get("BLINKA_FIRESTORE_COLLECTION") or "batches",
         )

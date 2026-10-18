@@ -71,7 +71,7 @@ Estados permitidos: `PENDIENTE`, `EN_CURSO`, `BLOQUEADA`, `VALIDADA`, `FUERA_DE_
 | T03 | Límites de PDF y datos no confiables | T01 | `src/blinka/domain/pdf_boundaries.py`, `safe_context.py` | Rechaza entradas peligrosas sin ejecutar contenido | VALIDADA |
 | T04 | Procesamiento por lotes | T01, T02 | batch API y pruebas de integración | Procesa hasta 30 documentos en demo, con concurrencia 4 | EN_CURSO |
 | T05 | Persistencia local | T02 | SQLite batch store | Flujo reproducible en Codespaces | VALIDADA |
-| T06 | Persistencia Firestore | T04, T05 | adaptador Firestore y esquema | Facturas, estados, decisiones, eventos, usuarios y hechos estructurados | PENDIENTE |
+| T06 | Persistencia Firestore | T04, T05 | adaptador Firestore y esquema | Facturas, estados, decisiones, eventos, usuarios y hechos estructurados | VALIDADA |
 | T07 | Memoria estructurada | T01, T06 | memory models/projection | Consulta por tenant sin PDF crudo | EN_CURSO |
 | T08 | Pub/Sub para lotes | T04, T06 | topic, suscripción y worker | Desacopla cargas y permite reintentos | PENDIENTE |
 | T09 | API Cloud Run | T06, T08 | `Dockerfile`, `cloudbuild.yaml`, endpoints | Health, batches y memory search operativos | PENDIENTE |
@@ -122,6 +122,7 @@ Cada avance debe registrar:
 |---|---|---|---|---|
 | 2026-10-18 | Infraestructura base | Proyecto GCP, Firestore, Artifact Registry, Pub/Sub y configuración de despliegue preparados | Verificación de APIs y recursos | VALIDADA |
 | 2026-10-18 | Contratos y seguridad de entrada | Contratos de workflow, límites PDF, contexto seguro y memoria estructurada versionados | Suite previa: 102 pasadas, 1 omitida por permisos de symlink | VALIDADA |
+| 2026-10-18 | Persistencia Firestore | Adaptador seleccionable por `BLINKA_STORAGE_BACKEND`, con prueba aislada y dependencia versionada | Suite: 112 pasadas, 1 omitida por permisos de symlink | VALIDADA |
 | 2026-10-18 | Despliegue | Dockerfile, Cloud Build y Firebase Hosting declarativo añadidos | Pendiente despliegue real | EN_CURSO |
 
 ## 10. Fuera de alcance actual
@@ -130,4 +131,4 @@ Pagos reales, conexión bancaria, correo real, OCR avanzado, autenticación de p
 
 ## 11. Regla para el siguiente paso
 
-La siguiente tarea prioritaria es **T06: implementar el adaptador Firestore y probarlo con un fake local**, sin desplegar todavía. Después se conectará el API a ese backend, se ejecutará la suite completa y sólo entonces se hará el despliegue de Cloud Run.
+La siguiente tarea prioritaria es **T08: conectar Pub/Sub y el worker de lotes**, manteniendo Firestore como backend seleccionable mediante `BLINKA_STORAGE_BACKEND=firestore`. Después se validará el API en Cloud Run y se hará el despliegue.
