@@ -94,7 +94,7 @@ Los casos escalados se consultan con `GET /reviews` y se resuelven con `POST /re
 ```bash
 uv sync
 uv run pytest -q
-uv run adk web --host 0.0.0.0 --port 8000 --allow_origins="*" agents
+uv run adk web --host 0.0.0.0 --port 8000 --allow_origins="*" agents/blinka_visual_builder
 ```
 
 Para ejecutar el frontend localmente:

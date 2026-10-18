@@ -44,7 +44,7 @@ La evaluación determinista compara moneda, beneficiario permitido, acuerdo, dup
 
 La decisión se guarda dentro del recibo con reglas, evidencia, razones, versión de política y presupuesto. El workflow F2 sigue compuesto solo por funciones ADK; F4 será la fase que podrá usar un LLM para extracción asistida.
 
-Para probar el agente con la interfaz de desarrollo de ADK (opcional): `uv run adk web agents`.
+Para probar el agente publicado en la interfaz de desarrollo de ADK (opcional): `uv run adk web agents/blinka_visual_builder`.
 
 ## Orquestador multiagente determinista
 
