@@ -83,3 +83,23 @@ def test_adk_yaml_resolves_builder_owned_tool(tmp_path, monkeypatch):
     assert agent.tools
     assert callable(agent.tools[0])
     assert agent.tools[0].__name__ == "evaluate_invoice"
+
+
+def test_visual_builder_agent_config_is_versioned():
+    """The Builder app must be deployable from the repository, not only UI state."""
+    config_path = REPO / "agents" / "blinka_visual_builder" / "root_agent.yaml"
+    assert config_path.exists()
+    config_text = config_path.read_text(encoding="utf-8")
+    assert "name: blinka_visual_builder" in config_text
+    assert "blinka_visual_builder.tools.evaluate_invoice" in config_text
+
+
+def test_versioned_visual_builder_config_resolves(monkeypatch):
+    """The checked-in Builder config resolves with ADK's agents import root."""
+    monkeypatch.syspath_prepend(str(REPO / "agents"))
+    config_path = REPO / "agents" / "blinka_visual_builder" / "root_agent.yaml"
+    agent = config_agent_utils.from_config(str(config_path))
+
+    assert agent.name == "blinka_visual_builder"
+    assert agent.tools
+    assert agent.tools[0].__name__ == "evaluate_invoice"
