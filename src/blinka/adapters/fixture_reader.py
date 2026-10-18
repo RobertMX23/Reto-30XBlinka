@@ -137,6 +137,8 @@ def read_pdf_text_file(
         encoding="utf-8",
         sha256=hashlib.sha256(data).hexdigest(),
         byte_length=len(data),
+        trust="UNTRUSTED_DATA",
+        instructions_allowed=False,
     )
 
 
@@ -153,4 +155,6 @@ def build_source(data: bytes, *, origin: str, ingest_key: str) -> SourceDocument
         encoding=encoding,  # type: ignore[arg-type]
         sha256=hashlib.sha256(data).hexdigest(),
         byte_length=len(data),
+        trust="UNTRUSTED_DATA",
+        instructions_allowed=False,
     )

@@ -51,7 +51,7 @@ class FieldIssue(_Model):
 
 
 class SourceDocument(_Model):
-    """Fuente original conservada ANTES de interpretarla."""
+    """Fuente original conservada antes de interpretarla como datos no confiables."""
 
     ingest_key: str
     origin: str  # ruta relativa al directorio de facturas, o "inline"
@@ -59,6 +59,8 @@ class SourceDocument(_Model):
     encoding: Literal["utf-8", "latin-1"]
     sha256: str  # huella de los bytes originales
     byte_length: int
+    trust: Literal["UNTRUSTED_DATA"] = "UNTRUSTED_DATA"
+    instructions_allowed: bool = False
 
 
 class RawField(_Model):
