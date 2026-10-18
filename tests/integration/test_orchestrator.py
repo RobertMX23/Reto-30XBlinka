@@ -33,6 +33,16 @@ def test_orchestrator_happy_path_registers_text(service, monkeypatch):
     assert ingested["receipt"]["fields"]["invoice_number"] == "ORCH-001"
 
 
+def test_orchestrator_does_not_ingest_greeting(service, monkeypatch):
+    monkeypatch.setenv("BLINKA_DB_PATH", str(service._settings.db_path))
+    classified = nodes.classify_source(nodes.classify_intent("hola"))
+    result = nodes.audit_result(nodes.evaluate_invoice(nodes.ingest_source(classified)))
+    assert result["state"] == "COMPLETED"
+    assert result["intent"] == "GREETING"
+    assert result["intake_id"] is None
+    assert "Puedo revisar" in result["response"]
+
+
 def test_orchestrator_can_chain_deterministic_decision(service, monkeypatch):
     monkeypatch.setenv("BLINKA_DB_PATH", str(service._settings.db_path))
     classified = nodes.classify_source({"content": _invoice(), "origin": "CHAT", "run_decision": True})

@@ -18,6 +18,14 @@ class SourceType(str, Enum):
     EMAIL_ATTACHMENT = "EMAIL_ATTACHMENT"
 
 
+class IntentType(str, Enum):
+    INVOICE = "INVOICE"
+    GREETING = "GREETING"
+    QUESTION = "QUESTION"
+    STATUS_QUERY = "STATUS_QUERY"
+    UNKNOWN = "UNKNOWN"
+
+
 class WorkflowState(str, Enum):
     RECEIVED = "RECEIVED"
     CLASSIFIED = "CLASSIFIED"
@@ -67,10 +75,12 @@ class InputIssue(BaseModel):
 class OrchestrationResult(BaseModel):
     contract_version: str = "1.0"
     request_id: Optional[str] = None
+    intent: Optional[IntentType] = None
     state: WorkflowState
     source_type: Optional[SourceType] = None
     intake_id: Optional[str] = None
     receipt: Optional[dict[str, Any]] = None
     decision: Optional[dict[str, Any]] = None
     issues: list[InputIssue] = Field(default_factory=list)
+    response: Optional[str] = None
     moves_money: bool = False
