@@ -29,4 +29,18 @@ def test_batch_limits_items_to_one_hundred():
     assert len(BatchRequest(batch_id="BATCH-100", items=items).items) == 100
     with pytest.raises(ValueError):
         BatchRequest(batch_id="BATCH-101", items=[_item(index) for index in range(101)])
+
+
+def test_batch_fanout_fanin_handles_one_hundred_documents():
+    request = BatchRequest(batch_id="BATCH-100-RUN", items=[_item(index) for index in range(100)], max_concurrency=8)
+
+    def processor(item: BatchItem) -> BatchItem:
+        return item.model_copy(update={"state": WorkflowState.PAGAR, "result": {"state": "PAGAR"}})
+
+    result = process_batch(request, processor)
+    assert result.state == BatchState.COMPLETED
+    assert result.total_documents == 100
+    assert result.completed_documents == 100
+    assert result.pagar == 100
+    assert all(item.attempt == 1 for item in result.items)
 import pytest
