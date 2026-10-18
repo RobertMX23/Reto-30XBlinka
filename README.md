@@ -10,6 +10,17 @@ Blinka recibe facturas, valida sus datos contra proveedores y acuerdos aprobados
 
 La URL recomendada para la evaluación es la del frontend. La API y ADK se exponen como superficies técnicas de validación.
 
+## Proyecto de Google Cloud
+
+- **Project ID:** `blinka-30x-2026`
+- **Número del proyecto:** `1024016593251`
+- **Región principal:** `us-central1`
+- **Proyecto Firebase/Hosting:** `blinka-30x-2026`
+
+El número del proyecto identifica el mismo proyecto GCP usado por los servicios
+`blinka-api` y `blinka-adk`. Las credenciales no se almacenan en este repositorio;
+Cloud Run usa la cuenta de servicio y Application Default Credentials.
+
 ## Qué se puede demostrar
 
 1. Enviar una factura como texto estructurado.
