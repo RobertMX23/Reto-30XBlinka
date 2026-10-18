@@ -19,7 +19,7 @@ steps:
       - --memory=1Gi
       - --concurrency=20
       - --allow-unauthenticated
-      - --set-env-vars=BLINKA_MEMORY_BACKEND=local,BLINKA_MAX_PDF_PAGES=100,BLINKA_MAX_EXTRACTED_TEXT_BYTES=1048576
+      - --set-env-vars=BLINKA_STORAGE_BACKEND=firestore,BLINKA_QUEUE_BACKEND=pubsub,BLINKA_MEMORY_BACKEND=local,BLINKA_MAX_PDF_PAGES=100,BLINKA_MAX_EXTRACTED_TEXT_BYTES=1048576
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
     entrypoint: gcloud
     args:
@@ -34,7 +34,7 @@ steps:
       - --max-instances=3
       - --cpu=1
       - --memory=1Gi
-      - --allow-unauthenticated
+      - --no-allow-unauthenticated
       - --command=uv
       - --args=run,--no-dev,python,-m,blinka.worker_api
       - --set-env-vars=BLINKA_STORAGE_BACKEND=firestore,BLINKA_QUEUE_BACKEND=pubsub,BLINKA_MEMORY_BACKEND=local
