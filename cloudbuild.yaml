@@ -35,6 +35,7 @@ steps:
       - --cpu=1
       - --memory=1Gi
       - --no-allow-unauthenticated
+      - --service-account=blinka-worker@blinka-30x-2026.iam.gserviceaccount.com
       - --command=uv
       - --args=run,--no-dev,python,-m,blinka.worker_api
       - --set-env-vars=BLINKA_STORAGE_BACKEND=firestore,BLINKA_QUEUE_BACKEND=pubsub,BLINKA_MEMORY_BACKEND=local
