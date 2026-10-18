@@ -71,23 +71,23 @@ def classify_source(node_input: Any) -> dict[str, Any]:
     return _event({"intent": IntentType.INVOICE, "request": request.model_dump(mode="json"), "state": WorkflowState.CLASSIFIED, "issues": issues}, "classify_source", WorkflowState.CLASSIFIED, issue_count=len(issues))
 
 
-def ingest_source(node_input: dict[str, Any]) -> dict[str, Any]:
+def ingest_source(node_input: dict[str, Any], service: Any = None) -> dict[str, Any]:
     if node_input.get("issues") or node_input.get("intent") != IntentType.INVOICE:
         return node_input
     request = classify_input(node_input["request"])
     try:
-        result = build_service().ingest(preserve_input(request))
+        result = (service or build_service()).ingest(preserve_input(request))
     except Exception as exc:
         return {**node_input, "state": WorkflowState.FAILED, "issues": [{"code": "INGEST_FAILED", "message": str(exc), "retryable": False}]}
     receipt = result.receipt.model_dump(mode="json")
     return _event({**node_input, "state": WorkflowState.READY_FOR_DECISION, "intake_id": receipt["intake_id"], "receipt": receipt, "ingest_outcome": result.outcome}, "ingest_source", WorkflowState.READY_FOR_DECISION, outcome=result.outcome)
 
 
-def evaluate_invoice(node_input: dict[str, Any]) -> dict[str, Any]:
+def evaluate_invoice(node_input: dict[str, Any], service: Any = None) -> dict[str, Any]:
     if node_input.get("issues") or node_input.get("intent") != IntentType.INVOICE:
         return node_input
     try:
-        decision = build_service().decide(node_input["intake_id"])
+        decision = (service or build_service()).decide(node_input["intake_id"])
     except Exception as exc:
         return {**node_input, "state": WorkflowState.FAILED, "issues": [{"code": "DECISION_FAILED", "message": str(exc), "retryable": False}]}
     new_state = WorkflowState(decision.decision)
@@ -115,15 +115,16 @@ def audit_result(node_input: dict[str, Any]) -> dict[str, Any]:
     return result.model_dump(mode="json")
 
 
-def process_batch_item(batch_id: str, item: BatchItem) -> BatchItem:
+def process_batch_item(batch_id: str, item: BatchItem, settings: Any = None) -> BatchItem:
     """Ejecuta un documento del lote por el mismo camino que una entrada individual."""
     request = item.request
     if request.ingest_key is None:
         request = request.model_copy(update={"ingest_key": f"{batch_id}:{item.document_id}"})
     classified_intent = classify_intent(request.model_dump(mode="json"))
     classified = classify_source(classified_intent)
-    ingested = ingest_source(classified)
-    evaluated = evaluate_invoice(ingested)
+    service = build_service(settings) if settings is not None else build_service()
+    ingested = ingest_source(classified, service=service)
+    evaluated = evaluate_invoice(ingested, service=service)
     result = audit_result(evaluated)
     state = WorkflowState(result.get("state", WorkflowState.FAILED))
     issues = [InputIssue.model_validate(issue) for issue in result.get("issues", [])]

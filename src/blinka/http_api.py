@@ -6,6 +6,7 @@ import json
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from threading import Thread
+from dataclasses import replace
 from urllib.parse import unquote, urlparse
 
 from blinka.domain.batch_models import BatchRequest
@@ -14,6 +15,7 @@ from blinka.adapters.sqlite_batch_store import SqliteBatchStore
 from blinka.application.batch import process_and_persist_batch
 from agents.blinka_orchestrator.nodes import process_batch_item
 from blinka.tools.batch_tools import get_batch_status
+from blinka.config import Settings
 
 
 def make_handler(db_path: Path):
@@ -53,7 +55,9 @@ def make_handler(db_path: Path):
             store = SqliteBatchStore(db_path)
             store.initialize()
             store.create(request)
-            Thread(target=process_and_persist_batch, args=(request, lambda item: process_batch_item(request.batch_id, item), store), daemon=True).start()
+            base_settings = Settings.from_env()
+            worker_settings = replace(base_settings, db_path=db_path)
+            Thread(target=process_and_persist_batch, args=(request, lambda item: process_batch_item(request.batch_id, item, worker_settings), store), daemon=True).start()
             self._send(202, {"ok": True, "batch_id": request.batch_id, "state": "PROCESSING", "total_documents": len(request.items)})
 
         def log_message(self, format: str, *args: object) -> None:
