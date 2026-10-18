@@ -96,3 +96,7 @@ No se deben guardar claves en Git. En Cloud Run se usan cuentas de servicio y Ap
 ## Estado del proyecto
 
 El demo end to end está desplegado y listo para evaluación técnica. El siguiente bloque de producto es completar un panel visual de revisiones humanas y después endurecer autenticación, auditoría y OCR para producción.
+
+## Agente compatible con Visual Builder
+
+Se conserva el orquestador Python original en `agents/blinka_orchestrator/`. En paralelo, `agents/blinka_builder/` contiene un agente basado en Agent Config (`root_agent.yaml`) y una herramienta Builder que reutiliza el mismo flujo determinista. Esta segunda versión permite abrir el agente desde ADK Web y editar su configuración con Visual Builder sin eliminar la implementación anterior.
