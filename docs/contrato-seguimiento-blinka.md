@@ -127,6 +127,7 @@ Cada avance debe registrar:
 | 2026-10-18 | Worker Pub/Sub | Worker recupera el lote desde Firestore, ejecuta el flujo determinista y persiste el resultado; suscripción `blinka-batch-worker` creada | 2 pruebas específicas pasadas | VALIDADA |
 | 2026-10-18 | Cloud Run worker | Receptor push HTTP y segundo servicio `blinka-worker` declarados en Cloud Build | Sintaxis validada; despliegue real pendiente | EN_CURSO |
 | 2026-10-18 | Despliegue Cloud Run | `blinka-api` público para demo y `blinka-worker` privado con OIDC desde Pub/Sub | API `/health`: 200; worker sin autenticación directa: 403; suscripción OIDC configurada | VALIDADA |
+| 2026-10-18 | Smoke end to end | Lote sintético `DEMO-20261018-002` atravesó API, Pub/Sub, worker y Firestore | HTTP 202/200; decisión determinista `ESCALAR` por campos faltantes; sin movimiento de dinero | VALIDADA |
 | 2026-10-18 | Despliegue | Dockerfile, Cloud Build y Firebase Hosting declarativo añadidos | Pendiente despliegue real | EN_CURSO |
 
 ## 10. Fuera de alcance actual
