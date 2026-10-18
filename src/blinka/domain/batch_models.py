@@ -34,6 +34,11 @@ class BatchItem(BaseModel):
     events: list[dict[str, Any]] = Field(default_factory=list)
 
 
+# Nombre de contrato orientado al dominio: cada elemento del lote representa
+# una factura que el orquestador debe procesar de forma independiente.
+InvoiceWorkItem = BatchItem
+
+
 class BatchRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 

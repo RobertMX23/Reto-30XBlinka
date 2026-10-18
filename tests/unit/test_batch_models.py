@@ -1,5 +1,5 @@
 from blinka.application.batch import process_batch
-from blinka.domain.batch_models import BatchItem, BatchRequest, BatchState
+from blinka.domain.batch_models import BatchItem, BatchRequest, BatchState, InvoiceWorkItem
 from blinka.domain.input_models import InputRequest, WorkflowState
 
 
@@ -8,6 +8,12 @@ def _item(number: int) -> BatchItem:
         document_id=f"DOC-{number:03d}",
         request=InputRequest(content=f"factura {number}"),
     )
+
+
+def test_invoice_work_item_is_explicit_batch_contract_alias() -> None:
+    item = InvoiceWorkItem(document_id="DOC-ALIAS", request=InputRequest(content="invoice"))
+    assert isinstance(item, BatchItem)
+    assert item.document_id == "DOC-ALIAS"
 
 
 def test_batch_processes_items_and_aggregates_decisions():
