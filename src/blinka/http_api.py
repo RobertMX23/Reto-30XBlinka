@@ -17,6 +17,8 @@ from blinka.application.batch import process_and_persist_batch
 from agents.blinka_orchestrator.nodes import process_batch_item
 from blinka.tools.batch_tools import get_batch_status
 from blinka.config import Settings
+from blinka.adapters.firestore_review_store import FirestoreReviewStore
+from blinka.domain.review_models import ReviewDecision
 
 
 def make_handler(db_path: Path):
@@ -44,6 +46,10 @@ def make_handler(db_path: Path):
             if path == "/health":
                 self._send(200, {"ok": True, "service": "blinka-batch-api"})
                 return
+            if path == "/reviews":
+                reviews=FirestoreReviewStore().list_pending()
+                self._send(200, {"ok": True, "reviews": [r.model_dump(mode="json") for r in reviews]})
+                return
             prefix = "/batches/"
             if path.startswith(prefix) and path != prefix:
                 batch_id = unquote(path[len(prefix):])
@@ -54,7 +60,15 @@ def make_handler(db_path: Path):
             self._send(404, {"ok": False, "code": "NOT_FOUND", "message": "Ruta no encontrada."})
 
         def do_POST(self) -> None:  # noqa: N802
-            if urlparse(self.path).path.rstrip("/") != "/batches":
+            path = urlparse(self.path).path.rstrip("/")
+            if path.startswith("/reviews/") and path.endswith("/decision"):
+                review_id = path.split("/")[2]
+                length=int(self.headers.get("Content-Length", "0"))
+                payload=json.loads(self.rfile.read(length))
+                review=FirestoreReviewStore().decide(review_id, ReviewDecision(payload["decision"]), payload.get("decided_by", "Sandra"), payload.get("reason"))
+                self._send(200, {"ok": True, "review": review.model_dump(mode="json")})
+                return
+            if path != "/batches":
                 self._send(404, {"ok": False, "code": "NOT_FOUND", "message": "Ruta no encontrada."})
                 return
             try:

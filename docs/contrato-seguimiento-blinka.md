@@ -78,7 +78,7 @@ Estados permitidos: `PENDIENTE`, `EN_CURSO`, `BLOQUEADA`, `VALIDADA`, `FUERA_DE_
 | T10 | Frontend Firebase Hosting | T09 | `frontend/`, `firebase.json` | Sitio frontend publicado e integrado con ADK Web | VALIDADA |
 | T11 | Pruebas unitarias, integración, smoke y E2E | T02–T10 | `tests/` y reporte | Happy path y fallos críticos cubiertos | VALIDADA |
 | T12 | Observabilidad y presupuesto | T09 | logs, métricas, alertas | Diagnóstico básico y alerta de costo | PENDIENTE (POST-DEMO) |
-| T13 | HITL para ESCALAR | T02, T10 | contrato de revisión humana | Solicitud, decisión y auditoría de persona | PENDIENTE |
+| T13 | HITL para ESCALAR | T02, T10 | contrato de revisión humana y endpoints `/reviews` | Solicitud persistente, decisión y auditoría de persona | EN_CURSO |
 | T14 | OCR, correo real y RAG Vertex | T06, T07 | adaptadores externos | Escalabilidad posterior | FUERA_DE_ALCANCE |
 
 ## 7. Criterios de aceptación del demo
@@ -132,6 +132,7 @@ Cada avance debe registrar:
 | 2026-10-18 | Smoke end to end | Lote sintético `DEMO-20261018-002` atravesó API, Pub/Sub, worker y Firestore | HTTP 202/200; decisión determinista `ESCALAR` por campos faltantes; sin movimiento de dinero | VALIDADA |
 | 2026-10-18 | Suite de aceptación | Matriz de decisiones, duplicados, boundaries, lotes, Pub/Sub y worker ejecutada | **114 pasadas, 1 omitida** por permisos de symlink | VALIDADA |
 | 2026-10-18 | Concurrencia Cloud Run | Lote de 30 documentos y tres lotes simultáneos desde jurados | Lote de 30: 30/30 completados; jurados: 3/3 completados | VALIDADA |
+| 2026-10-18 | HITL inicial | Solicitudes `HumanReview`, persistencia Firestore y endpoints de lista/decisión | Backend implementado; panel frontend y prueba cloud pendientes | EN_CURSO |
 | 2026-10-18 | Despliegue | Dockerfile, Cloud Build y Firebase Hosting declarativo añadidos | Pendiente despliegue real | EN_CURSO |
 
 ## 10. Fuera de alcance actual
