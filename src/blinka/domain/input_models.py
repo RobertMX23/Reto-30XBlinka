@@ -82,5 +82,6 @@ class OrchestrationResult(BaseModel):
     receipt: Optional[dict[str, Any]] = None
     decision: Optional[dict[str, Any]] = None
     issues: list[InputIssue] = Field(default_factory=list)
+    events: list[dict[str, Any]] = Field(default_factory=list)
     response: Optional[str] = None
     moves_money: bool = False

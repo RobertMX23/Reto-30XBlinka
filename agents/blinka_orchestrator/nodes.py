@@ -15,6 +15,12 @@ def _as_payload(value: Any) -> dict[str, Any]:
     return {"input": value}
 
 
+def _event(node_input: dict[str, Any], phase: str, state: WorkflowState, **details: Any) -> dict[str, Any]:
+    """Añade un evento observable sin registrar contenido sensible completo."""
+    event = {"phase": phase, "state": state.value, **details}
+    return {**node_input, "events": [*node_input.get("events", []), event]}
+
+
 def classify_intent(node_input: Any) -> dict[str, Any]:
     """Clasifica la intención sin interpretar ni persistir una factura."""
     raw = node_input.get("input", node_input) if isinstance(node_input, dict) else node_input
@@ -38,7 +44,7 @@ def classify_intent(node_input: Any) -> dict[str, Any]:
         intent = IntentType.QUESTION
     else:
         intent = IntentType.UNKNOWN
-    return {"input": raw, "intent": intent}
+    return {"input": raw, "intent": intent, "events": [{"phase": "classify_intent", "state": WorkflowState.RECEIVED.value, "intent": intent.value}]}
 
 
 def classify_source(node_input: Any) -> dict[str, Any]:
@@ -51,13 +57,13 @@ def classify_source(node_input: Any) -> dict[str, Any]:
             IntentType.STATUS_QUERY: "Para consultar un estado necesito el ID del ingreso o los datos de la factura.",
             IntentType.UNKNOWN: "Necesito una factura o una pregunta relacionada con cuentas por pagar.",
         }[intent]
-        return {"intent": intent, "state": WorkflowState.COMPLETED, "issues": [], "response": response}
+        return _event({"intent": intent, "state": WorkflowState.COMPLETED, "issues": [], "response": response}, "classify_source", WorkflowState.COMPLETED)
     try:
         request = classify_input(raw)
         issues = validate_supported_input(request)
     except Exception as exc:
         return OrchestrationResult(state=WorkflowState.REJECTED, issues=[InputIssue(code="INVALID_INPUT", message=str(exc))]).model_dump(mode="json")
-    return {"intent": IntentType.INVOICE, "request": request.model_dump(mode="json"), "state": WorkflowState.CLASSIFIED, "issues": issues}
+    return _event({"intent": IntentType.INVOICE, "request": request.model_dump(mode="json"), "state": WorkflowState.CLASSIFIED, "issues": issues}, "classify_source", WorkflowState.CLASSIFIED, issue_count=len(issues))
 
 
 def ingest_source(node_input: dict[str, Any]) -> dict[str, Any]:
@@ -69,7 +75,7 @@ def ingest_source(node_input: dict[str, Any]) -> dict[str, Any]:
     except Exception as exc:
         return {**node_input, "state": WorkflowState.FAILED, "issues": [{"code": "INGEST_FAILED", "message": str(exc), "retryable": False}]}
     receipt = result.receipt.model_dump(mode="json")
-    return {**node_input, "state": WorkflowState.READY_FOR_DECISION, "intake_id": receipt["intake_id"], "receipt": receipt, "ingest_outcome": result.outcome}
+    return _event({**node_input, "state": WorkflowState.READY_FOR_DECISION, "intake_id": receipt["intake_id"], "receipt": receipt, "ingest_outcome": result.outcome}, "ingest_source", WorkflowState.READY_FOR_DECISION, outcome=result.outcome)
 
 
 def evaluate_invoice(node_input: dict[str, Any]) -> dict[str, Any]:
@@ -79,7 +85,8 @@ def evaluate_invoice(node_input: dict[str, Any]) -> dict[str, Any]:
         decision = build_service().decide(node_input["intake_id"])
     except Exception as exc:
         return {**node_input, "state": WorkflowState.FAILED, "issues": [{"code": "DECISION_FAILED", "message": str(exc), "retryable": False}]}
-    return {**node_input, "state": WorkflowState(decision.decision), "decision": decision.model_dump(mode="json"), "moves_money": False}
+    new_state = WorkflowState(decision.decision)
+    return _event({**node_input, "state": new_state, "decision": decision.model_dump(mode="json"), "moves_money": False}, "evaluate_invoice", new_state, decision=decision.decision)
 
 
 evaluate_if_requested = evaluate_invoice
@@ -96,6 +103,7 @@ def audit_result(node_input: dict[str, Any]) -> dict[str, Any]:
         intake_id=node_input.get("intake_id"),
         receipt=node_input.get("receipt"),
         decision=node_input.get("decision"),
+        events=node_input.get("events", []),
         response=node_input.get("response"),
         moves_money=False,
     )
