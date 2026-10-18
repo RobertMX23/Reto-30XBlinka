@@ -27,6 +27,9 @@ class Settings:
     memory_rag_corpus: str | None = None
     storage_backend: str = "local"
     firestore_collection: str = "batches"
+    queue_backend: str = "local"
+    gcp_project_id: str | None = None
+    pubsub_topic: str = "blinka-batch"
 
     @classmethod
     def from_env(
@@ -56,4 +59,7 @@ class Settings:
             memory_rag_corpus=env.get("BLINKA_MEMORY_RAG_CORPUS"),
             storage_backend=(env.get("BLINKA_STORAGE_BACKEND") or "local").lower(),
             firestore_collection=env.get("BLINKA_FIRESTORE_COLLECTION") or "batches",
+            queue_backend=(env.get("BLINKA_QUEUE_BACKEND") or "local").lower(),
+            gcp_project_id=env.get("GOOGLE_CLOUD_PROJECT") or env.get("GCP_PROJECT_ID"),
+            pubsub_topic=env.get("BLINKA_PUBSUB_TOPIC") or "blinka-batch",
         )

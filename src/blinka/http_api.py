@@ -12,6 +12,7 @@ from urllib.parse import unquote, urlparse
 from blinka.domain.batch_models import BatchRequest
 from blinka.domain.input_models import InputRequest
 from blinka.adapters.batch_store_factory import build_batch_store
+from blinka.adapters.pubsub_batch_queue import PubSubBatchQueue
 from blinka.application.batch import process_and_persist_batch
 from agents.blinka_orchestrator.nodes import process_batch_item
 from blinka.tools.batch_tools import get_batch_status
@@ -68,6 +69,13 @@ def make_handler(db_path: Path):
             store = build_batch_store(worker_settings)
             store.initialize()
             store.create(request)
+            if worker_settings.queue_backend == "pubsub":
+                if not worker_settings.gcp_project_id:
+                    self._send(500, {"ok": False, "code": "CONFIGURATION_ERROR", "message": "Falta GOOGLE_CLOUD_PROJECT."})
+                    return
+                message_id = PubSubBatchQueue(worker_settings.gcp_project_id, worker_settings.pubsub_topic).publish_batch(request.batch_id)
+                self._send(202, {"ok": True, "batch_id": request.batch_id, "state": "QUEUED", "message_id": message_id, "total_documents": len(request.items)})
+                return
             Thread(target=process_and_persist_batch, args=(request, lambda item: process_batch_item(request.batch_id, item, worker_settings), store), daemon=True).start()
             self._send(202, {"ok": True, "batch_id": request.batch_id, "state": "PROCESSING", "total_documents": len(request.items)})
 
