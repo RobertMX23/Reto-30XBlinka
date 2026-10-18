@@ -126,7 +126,7 @@ def process_batch_item(batch_id: str, item: BatchItem) -> BatchItem:
     result = audit_result(evaluated)
     state = WorkflowState(result.get("state", WorkflowState.FAILED))
     issues = [InputIssue.model_validate(issue) for issue in result.get("issues", [])]
-    return item.model_copy(update={"request": request, "state": state, "result": result, "issues": issues})
+    return item.model_copy(update={"request": request, "state": state, "result": result, "issues": issues, "events": result.get("events", [])})
 
 
 def process_batch_request(request: BatchRequest) -> BatchResult:

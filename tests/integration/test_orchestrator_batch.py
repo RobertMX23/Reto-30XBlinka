@@ -32,6 +32,8 @@ def test_orchestrator_processes_batch_through_real_decision_flow(service, monkey
     assert (result.pagar, result.escalar, result.frenar) == (2, 1, 0)
     assert all(item.result["moves_money"] is False for item in result.items)
     assert all(item.attempt == 1 for item in result.items)
+    assert all(item.events for item in result.items)
+    assert result.events
 
 
 def test_orchestrator_batch_is_idempotent_for_same_documents(service, monkeypatch):

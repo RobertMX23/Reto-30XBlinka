@@ -31,6 +31,7 @@ class BatchItem(BaseModel):
     attempt: int = 0
     result: Optional[dict[str, Any]] = None
     issues: list[InputIssue] = Field(default_factory=list)
+    events: list[dict[str, Any]] = Field(default_factory=list)
 
 
 class BatchRequest(BaseModel):
@@ -53,6 +54,7 @@ class BatchResult(BaseModel):
     escalar: int = 0
     failed: int = 0
     items: list[BatchItem]
+    events: list[dict[str, Any]] = Field(default_factory=list)
     started_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     completed_at: Optional[datetime] = None
     moves_money: bool = False

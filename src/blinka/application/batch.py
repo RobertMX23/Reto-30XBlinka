@@ -50,6 +50,7 @@ def process_batch(request: BatchRequest, processor: ItemProcessor) -> BatchResul
         escalar=counts["ESCALAR"],
         failed=failed,
         items=items,
+        events=[event for item in items for event in item.events],
         completed_at=datetime.now(timezone.utc),
     )
 
@@ -87,6 +88,6 @@ def resume_persisted_batch(batch_id: str, processor: ItemProcessor, store: Batch
         "state": BatchState.COMPLETED_WITH_ERRORS if failed else BatchState.COMPLETED,
         "completed_documents": len(items) - failed,
         "pagar": counts["PAGAR"], "frenar": counts["FRENAR"], "escalar": counts["ESCALAR"], "failed": failed,
-        "items": items, "completed_at": datetime.now(timezone.utc),
+        "items": items, "events": [event for item in items for event in item.events], "completed_at": datetime.now(timezone.utc),
     })
     return store.save(final)
