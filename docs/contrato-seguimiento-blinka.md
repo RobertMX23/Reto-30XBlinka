@@ -69,14 +69,14 @@ Estados permitidos: `PENDIENTE`, `EN_CURSO`, `BLOQUEADA`, `VALIDADA`, `FUERA_DE_
 | T01 | Contratos de entrada, estados y decisiones | — | `docs/contratos-workflow.md`, este documento | Esquemas consistentes y versionados | VALIDADA |
 | T02 | Orquestador determinista | T01 | `agents/blinka_orchestrator`, tools | Clasifica, ingresa, evalúa y audita | VALIDADA |
 | T03 | Límites de PDF y datos no confiables | T01 | `src/blinka/domain/pdf_boundaries.py`, `safe_context.py` | Rechaza entradas peligrosas sin ejecutar contenido | VALIDADA |
-| T04 | Procesamiento por lotes | T01, T02 | batch API y pruebas de integración | Procesa hasta 30 documentos en demo, con concurrencia 4 | EN_CURSO |
+| T04 | Procesamiento por lotes | T01, T02 | batch API y pruebas de integración | Procesa hasta 30 documentos en demo, con concurrencia 4 | VALIDADA |
 | T05 | Persistencia local | T02 | SQLite batch store | Flujo reproducible en Codespaces | VALIDADA |
 | T06 | Persistencia Firestore | T04, T05 | adaptador Firestore y esquema | Facturas, estados, decisiones, eventos, usuarios y hechos estructurados | VALIDADA |
 | T07 | Memoria estructurada | T01, T06 | memory models/projection | Consulta por tenant sin PDF crudo | EN_CURSO |
 | T08 | Pub/Sub para lotes | T04, T06 | contrato, publicador, worker y suscripción | Desacopla cargas y permite reintentos | VALIDADA |
 | T09 | API Cloud Run | T06, T08 | `Dockerfile`, `cloudbuild.yaml`, endpoints | API y worker desplegados y verificables | VALIDADA |
 | T10 | Frontend Firebase Hosting | T09 | `frontend/`, `firebase.json` | Sitio frontend publicado e integrado con ADK Web | VALIDADA |
-| T11 | Pruebas unitarias, integración, smoke y E2E | T02–T10 | `tests/` y reporte | Happy path y fallos críticos cubiertos | EN_CURSO |
+| T11 | Pruebas unitarias, integración, smoke y E2E | T02–T10 | `tests/` y reporte | Happy path y fallos críticos cubiertos | VALIDADA |
 | T12 | Observabilidad y presupuesto | T09 | logs, métricas, alertas | Diagnóstico básico y alerta de costo | PENDIENTE |
 | T13 | HITL para ESCALAR | T02, T10 | contrato de revisión humana | Solicitud, decisión y auditoría de persona | PENDIENTE |
 | T14 | OCR, correo real y RAG Vertex | T06, T07 | adaptadores externos | Escalabilidad posterior | FUERA_DE_ALCANCE |
@@ -90,7 +90,7 @@ Estados permitidos: `PENDIENTE`, `EN_CURSO`, `BLOQUEADA`, `VALIDADA`, `FUERA_DE_
 - [x] Un PDF de más de 10 MB se rechaza antes del parseo (boundary probado; límite operativo cloud pendiente de ajuste).
 - [x] El texto extraído nunca se interpreta como instrucción del sistema.
 - [x] Cada decisión puede reconstruirse desde eventos, estado y reglas evaluadas.
-- [ ] Un lote de 30 documentos respeta concurrencia 4 y no pierde resultados ante reintentos en Cloud Run.
+- [x] Un lote de 30 documentos respeta concurrencia 4 y no pierde resultados ante reintentos en Cloud Run.
 - [x] `/health` responde correctamente en local y Cloud Run.
 - [x] La persistencia de demo usa Firestore; SQLite queda como modo local explícito.
 
@@ -130,7 +130,8 @@ Cada avance debe registrar:
 | 2026-10-18 | Firebase Hosting | Proyecto Firebase habilitado y carpeta `frontend/` publicada | Hosting URL: `https://blinka-30x-2026.web.app` | EN_CURSO |
 | 2026-10-18 | ADK Web | Servicio `blinka-adk` desplegado y público para la demo; frontend apunta a `/dev-ui/` | `/dev-ui/`: HTTP 200; URL `https://blinka-adk-1024016593251.us-central1.run.app` | VALIDADA |
 | 2026-10-18 | Smoke end to end | Lote sintético `DEMO-20261018-002` atravesó API, Pub/Sub, worker y Firestore | HTTP 202/200; decisión determinista `ESCALAR` por campos faltantes; sin movimiento de dinero | VALIDADA |
-| 2026-10-18 | Suite de aceptación | Matriz de decisiones, duplicados, boundaries, lotes, Pub/Sub y worker ejecutada | **114 pasadas, 1 omitida** por permisos de symlink | EN_CURSO |
+| 2026-10-18 | Suite de aceptación | Matriz de decisiones, duplicados, boundaries, lotes, Pub/Sub y worker ejecutada | **114 pasadas, 1 omitida** por permisos de symlink | VALIDADA |
+| 2026-10-18 | Concurrencia Cloud Run | Lote de 30 documentos y tres lotes simultáneos desde jurados | Lote de 30: 30/30 completados; jurados: 3/3 completados | VALIDADA |
 | 2026-10-18 | Despliegue | Dockerfile, Cloud Build y Firebase Hosting declarativo añadidos | Pendiente despliegue real | EN_CURSO |
 
 ## 10. Fuera de alcance actual
@@ -139,4 +140,4 @@ Pagos reales, conexión bancaria, correo real, OCR avanzado, autenticación de p
 
 ## 11. Regla para el siguiente paso
 
-La siguiente tarea prioritaria es **cerrar la prueba de lote concurrente en Cloud Run**, con 30 documentos y concurrencia 4, y después validar tres sesiones simultáneas del jurado. Luego se abordarán observabilidad/presupuesto y HITL.
+La siguiente tarea prioritaria es **T12: configurar observabilidad básica y alertas de presupuesto**. Después se abordará T13, la revisión humana para `ESCALAR`.
