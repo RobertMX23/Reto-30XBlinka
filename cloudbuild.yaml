@@ -59,3 +59,6 @@ steps:
       - --set-env-vars=^@^GOOGLE_CLOUD_PROJECT=blinka-30x-2026@GOOGLE_CLOUD_LOCATION=us-central1@GOOGLE_GENAI_USE_VERTEXAI=TRUE@BLINKA_REFERENCE_DIR=data/reference@BLINKA_STORAGE_BACKEND=firestore
 images:
   - us-central1-docker.pkg.dev/$PROJECT_ID/blinka/blinka:$COMMIT_SHA
+
+options:
+  logging: CLOUD_LOGGING_ONLY
