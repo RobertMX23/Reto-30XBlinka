@@ -19,7 +19,7 @@ steps:
       - --memory=1Gi
       - --concurrency=20
       - --allow-unauthenticated
-      - --set-env-vars=GCP_PROJECT_ID=blinka-30x-2026,BLINKA_STORAGE_BACKEND=firestore,BLINKA_QUEUE_BACKEND=pubsub,BLINKA_MEMORY_BACKEND=local,BLINKA_MAX_PDF_PAGES=100,BLINKA_MAX_EXTRACTED_TEXT_BYTES=1048576
+      - --set-env-vars=^@^GCP_PROJECT_ID=blinka-30x-2026@BLINKA_STORAGE_BACKEND=firestore@BLINKA_QUEUE_BACKEND=pubsub@BLINKA_MEMORY_BACKEND=local@BLINKA_MAX_PDF_PAGES=100@BLINKA_MAX_EXTRACTED_TEXT_BYTES=1048576
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
     entrypoint: gcloud
     args:
@@ -38,6 +38,23 @@ steps:
       - --service-account=blinka-worker@blinka-30x-2026.iam.gserviceaccount.com
       - --command=uv
       - --args=run,--no-dev,python,-m,blinka.worker_api
-      - --set-env-vars=GCP_PROJECT_ID=blinka-30x-2026,BLINKA_STORAGE_BACKEND=firestore,BLINKA_QUEUE_BACKEND=pubsub,BLINKA_MEMORY_BACKEND=local
+      - --set-env-vars=^@^GCP_PROJECT_ID=blinka-30x-2026@BLINKA_STORAGE_BACKEND=firestore@BLINKA_QUEUE_BACKEND=pubsub@BLINKA_MEMORY_BACKEND=local
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - blinka-adk
+      - --image=us-central1-docker.pkg.dev/$PROJECT_ID/blinka/blinka:$COMMIT_SHA
+      - --region=us-central1
+      - --platform=managed
+      - --port=8080
+      - --min-instances=0
+      - --max-instances=2
+      - --cpu=1
+      - --memory=1Gi
+      - --allow-unauthenticated
+      - --command=uv
+      - --args=run,--no-dev,adk,web,--host,0.0.0.0,--port,8080,--allow_origins=https://blinka-30x-2026.web.app,agents
 images:
   - us-central1-docker.pkg.dev/$PROJECT_ID/blinka/blinka:$COMMIT_SHA
