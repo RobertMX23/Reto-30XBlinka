@@ -35,6 +35,7 @@ class SqliteBatchStore:
             raise StorageError(f"No se pudo guardar el lote: {exc}") from exc
         return result
     def get(self, batch_id: str) -> BatchResult | None:
+        self.initialize()
         try:
             with closing(self._connect()) as conn:
                 row = conn.execute("SELECT result_json FROM batches WHERE batch_id=?", (batch_id,)).fetchone()

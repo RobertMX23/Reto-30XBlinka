@@ -10,6 +10,7 @@ from blinka.application.batch import process_batch, process_and_persist_batch, r
 from blinka.adapters.sqlite_batch_store import SqliteBatchStore
 from blinka.config import Settings
 from blinka.tools.input_tools import classify_input, preserve_input, validate_supported_input
+from blinka.tools.batch_tools import get_batch_status
 from blinka.wiring import build_service
 
 
