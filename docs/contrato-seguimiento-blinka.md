@@ -73,7 +73,7 @@ Estados permitidos: `PENDIENTE`, `EN_CURSO`, `BLOQUEADA`, `VALIDADA`, `FUERA_DE_
 | T05 | Persistencia local | T02 | SQLite batch store | Flujo reproducible en Codespaces | VALIDADA |
 | T06 | Persistencia Firestore | T04, T05 | adaptador Firestore y esquema | Facturas, estados, decisiones, eventos, usuarios y hechos estructurados | VALIDADA |
 | T07 | Memoria estructurada | T01, T06 | memory models/projection | Consulta por tenant sin PDF crudo | EN_CURSO |
-| T08 | Pub/Sub para lotes | T04, T06 | contrato de mensaje, publicador y API | Desacopla cargas y permite reintentos | EN_CURSO |
+| T08 | Pub/Sub para lotes | T04, T06 | contrato, publicador, worker y suscripción | Desacopla cargas y permite reintentos | VALIDADA |
 | T09 | API Cloud Run | T06, T08 | `Dockerfile`, `cloudbuild.yaml`, endpoints | Health, batches y memory search operativos | PENDIENTE |
 | T10 | Frontend Firebase Hosting | T09 | `frontend/`, `firebase.json` | Carga, selección de usuario y trazabilidad | PENDIENTE |
 | T11 | Pruebas unitarias, integración, smoke y E2E | T02–T10 | `tests/` y reporte | Happy path y fallos críticos cubiertos | EN_CURSO |
@@ -124,6 +124,7 @@ Cada avance debe registrar:
 | 2026-10-18 | Contratos y seguridad de entrada | Contratos de workflow, límites PDF, contexto seguro y memoria estructurada versionados | Suite previa: 102 pasadas, 1 omitida por permisos de symlink | VALIDADA |
 | 2026-10-18 | Persistencia Firestore | Adaptador seleccionable por `BLINKA_STORAGE_BACKEND`, con prueba aislada y dependencia versionada | Suite: 112 pasadas, 1 omitida por permisos de symlink | VALIDADA |
 | 2026-10-18 | Cola Pub/Sub | Contrato `BatchMessage`, publicador y modo `BLINKA_QUEUE_BACKEND=pubsub` en API | Suite: 113 pasadas, 1 omitida por permisos de symlink | EN_CURSO |
+| 2026-10-18 | Worker Pub/Sub | Worker recupera el lote desde Firestore, ejecuta el flujo determinista y persiste el resultado; suscripción `blinka-batch-worker` creada | 2 pruebas específicas pasadas | VALIDADA |
 | 2026-10-18 | Despliegue | Dockerfile, Cloud Build y Firebase Hosting declarativo añadidos | Pendiente despliegue real | EN_CURSO |
 
 ## 10. Fuera de alcance actual
