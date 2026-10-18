@@ -100,6 +100,21 @@ evaluate_if_requested = evaluate_invoice
 def audit_result(node_input: dict[str, Any]) -> dict[str, Any]:
     if node_input.get("issues"):
         return node_input
+    decision = node_input.get("decision") or {}
+    decision_name = decision.get("decision") or node_input.get("state")
+    reasons = decision.get("reasons") or []
+    explanation = decision.get("explanation")
+    if decision_name in {"PAGAR", "FRENAR", "ESCALAR"}:
+        labels = {"PAGAR": "PAGAR", "FRENAR": "FRENAR", "ESCALAR": "ESCALAR"}
+        reason_text = explanation or ("; ".join(reasons) if reasons else "Todas las reglas aplicables fueron evaluadas.")
+        human_response = (
+            f"Resultado de la factura: {labels[decision_name]}. "
+            f"{reason_text} "
+            f"Ingreso registrado: {node_input.get('intake_id', 'no disponible')}. "
+            "No se mueve dinero."
+        )
+    else:
+        human_response = node_input.get("response")
     result = OrchestrationResult(
         request_id=node_input.get("request", {}).get("request_id"),
         intent=node_input.get("intent"),
@@ -110,7 +125,7 @@ def audit_result(node_input: dict[str, Any]) -> dict[str, Any]:
         receipt=node_input.get("receipt"),
         decision=node_input.get("decision"),
         events=node_input.get("events", []),
-        response=node_input.get("response"),
+        response=human_response,
         moves_money=False,
     )
     return result.model_dump(mode="json")
