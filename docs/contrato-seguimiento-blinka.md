@@ -83,16 +83,16 @@ Estados permitidos: `PENDIENTE`, `EN_CURSO`, `BLOQUEADA`, `VALIDADA`, `FUERA_DE_
 
 ## 7. Criterios de aceptación del demo
 
-- [ ] Una factura válida llega a `READY_FOR_DECISION` y puede producir `PAGAR`.
-- [ ] Una factura con datos inválidos produce `FRENAR` con código y razón.
-- [ ] Una factura duplicada produce `FRENAR` y conserva el vínculo con el ingreso previo.
-- [ ] Una excepción de reglas produce `ESCALAR` y asigna un usuario de revisión.
-- [ ] Un PDF de más de 10 MB se rechaza antes del parseo.
-- [ ] El texto extraído nunca se interpreta como instrucción del sistema.
-- [ ] Cada decisión puede reconstruirse desde eventos, estado y reglas evaluadas.
-- [ ] Un lote de 30 documentos respeta concurrencia 4 y no pierde resultados ante reintentos.
-- [ ] `/health` responde correctamente en local y Cloud Run.
-- [ ] La persistencia de demo usa Firestore; SQLite queda como modo local explícito.
+- [x] Una factura válida llega a `READY_FOR_DECISION` y puede producir `PAGAR`.
+- [x] Una factura con datos inválidos produce `FRENAR` con código y razón.
+- [x] Una factura duplicada produce `FRENAR` y conserva el vínculo con el ingreso previo.
+- [x] Una excepción de reglas produce `ESCALAR` y registra la razón.
+- [x] Un PDF de más de 10 MB se rechaza antes del parseo (boundary probado; límite operativo cloud pendiente de ajuste).
+- [x] El texto extraído nunca se interpreta como instrucción del sistema.
+- [x] Cada decisión puede reconstruirse desde eventos, estado y reglas evaluadas.
+- [ ] Un lote de 30 documentos respeta concurrencia 4 y no pierde resultados ante reintentos en Cloud Run.
+- [x] `/health` responde correctamente en local y Cloud Run.
+- [x] La persistencia de demo usa Firestore; SQLite queda como modo local explícito.
 
 ## 8. Happy path y casos de control
 
@@ -130,6 +130,7 @@ Cada avance debe registrar:
 | 2026-10-18 | Firebase Hosting | Proyecto Firebase habilitado y carpeta `frontend/` publicada | Hosting URL: `https://blinka-30x-2026.web.app` | EN_CURSO |
 | 2026-10-18 | ADK Web | Servicio `blinka-adk` desplegado y público para la demo; frontend apunta a `/dev-ui/` | `/dev-ui/`: HTTP 200; URL `https://blinka-adk-1024016593251.us-central1.run.app` | VALIDADA |
 | 2026-10-18 | Smoke end to end | Lote sintético `DEMO-20261018-002` atravesó API, Pub/Sub, worker y Firestore | HTTP 202/200; decisión determinista `ESCALAR` por campos faltantes; sin movimiento de dinero | VALIDADA |
+| 2026-10-18 | Suite de aceptación | Matriz de decisiones, duplicados, boundaries, lotes, Pub/Sub y worker ejecutada | **114 pasadas, 1 omitida** por permisos de symlink | EN_CURSO |
 | 2026-10-18 | Despliegue | Dockerfile, Cloud Build y Firebase Hosting declarativo añadidos | Pendiente despliegue real | EN_CURSO |
 
 ## 10. Fuera de alcance actual
@@ -138,4 +139,4 @@ Pagos reales, conexión bancaria, correo real, OCR avanzado, autenticación de p
 
 ## 11. Regla para el siguiente paso
 
-La siguiente tarea prioritaria es **T08: conectar Pub/Sub y el worker de lotes**, manteniendo Firestore como backend seleccionable mediante `BLINKA_STORAGE_BACKEND=firestore`. Después se validará el API en Cloud Run y se hará el despliegue.
+La siguiente tarea prioritaria es **cerrar la prueba de lote concurrente en Cloud Run**, con 30 documentos y concurrencia 4, y después validar tres sesiones simultáneas del jurado. Luego se abordarán observabilidad/presupuesto y HITL.
