@@ -6,7 +6,7 @@ from typing import Any
 
 from blinka.domain.input_models import InputIssue, IntentType, OrchestrationResult, WorkflowState
 from blinka.domain.batch_models import BatchItem, BatchRequest, BatchResult
-from blinka.application.batch import process_batch, process_and_persist_batch
+from blinka.application.batch import process_batch, process_and_persist_batch, resume_persisted_batch
 from blinka.adapters.sqlite_batch_store import SqliteBatchStore
 from blinka.config import Settings
 from blinka.tools.input_tools import classify_input, preserve_input, validate_supported_input
@@ -138,3 +138,9 @@ def process_and_persist_batch_request(request: BatchRequest, settings: Settings 
     settings = settings or Settings.from_env()
     store = SqliteBatchStore(settings.db_path)
     return process_and_persist_batch(request, lambda item: process_batch_item(request.batch_id, item), store)
+
+
+def resume_batch_request(batch_id: str, settings: Settings | None = None) -> BatchResult:
+    settings = settings or Settings.from_env()
+    store = SqliteBatchStore(settings.db_path)
+    return resume_persisted_batch(batch_id, lambda item: process_batch_item(batch_id, item), store)

@@ -64,3 +64,29 @@ def process_and_persist_batch(request: BatchRequest, processor: ItemProcessor, s
     processing = created.model_copy(update={"state": BatchState.PROCESSING})
     store.save(processing)
     return store.save(process_batch(request, processor))
+
+
+def resume_persisted_batch(batch_id: str, processor: ItemProcessor, store: BatchStore) -> BatchResult:
+    """Reintenta solo items incompletos y conserva los resultados terminales."""
+    existing = store.get(batch_id)
+    if existing is None:
+        raise ValueError(f"No existe el lote {batch_id}.")
+    pending = [item for item in existing.items if item.state in {WorkflowState.FAILED, WorkflowState.RECEIVED, WorkflowState.PROCESSING}]
+    if not pending:
+        return existing
+    retried = process_batch(BatchRequest(batch_id=batch_id, items=pending), processor)
+    by_id = {item.document_id: item for item in retried.items}
+    items = [by_id.get(item.document_id, item) for item in existing.items]
+    counts = {"PAGAR": 0, "FRENAR": 0, "ESCALAR": 0}
+    for item in items:
+        state = item.result.get("state") if item.result else None
+        if state in counts:
+            counts[state] += 1
+    failed = sum(item.state == WorkflowState.FAILED for item in items)
+    final = existing.model_copy(update={
+        "state": BatchState.COMPLETED_WITH_ERRORS if failed else BatchState.COMPLETED,
+        "completed_documents": len(items) - failed,
+        "pagar": counts["PAGAR"], "frenar": counts["FRENAR"], "escalar": counts["ESCALAR"], "failed": failed,
+        "items": items, "completed_at": datetime.now(timezone.utc),
+    })
+    return store.save(final)

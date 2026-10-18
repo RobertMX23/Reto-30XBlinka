@@ -28,6 +28,7 @@ class IntentType(str, Enum):
 
 class WorkflowState(str, Enum):
     RECEIVED = "RECEIVED"
+    PROCESSING = "PROCESSING"
     CLASSIFIED = "CLASSIFIED"
     PRESERVED = "PRESERVED"
     EXTRACTING = "EXTRACTING"
