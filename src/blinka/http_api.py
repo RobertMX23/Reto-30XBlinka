@@ -5,8 +5,14 @@ from __future__ import annotations
 import json
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from threading import Thread
 from urllib.parse import unquote, urlparse
 
+from blinka.domain.batch_models import BatchRequest
+from blinka.domain.input_models import InputRequest
+from blinka.adapters.sqlite_batch_store import SqliteBatchStore
+from blinka.application.batch import process_and_persist_batch
+from agents.blinka_orchestrator.nodes import process_batch_item
 from blinka.tools.batch_tools import get_batch_status
 
 
@@ -32,6 +38,23 @@ def make_handler(db_path: Path):
                 self._send(200 if result.get("ok") else 404, result)
                 return
             self._send(404, {"ok": False, "code": "NOT_FOUND", "message": "Ruta no encontrada."})
+
+        def do_POST(self) -> None:  # noqa: N802
+            if urlparse(self.path).path.rstrip("/") != "/batches":
+                self._send(404, {"ok": False, "code": "NOT_FOUND", "message": "Ruta no encontrada."})
+                return
+            try:
+                length = int(self.headers.get("Content-Length", "0"))
+                payload = json.loads(self.rfile.read(length))
+                request = BatchRequest.model_validate(payload)
+            except (ValueError, TypeError, json.JSONDecodeError) as exc:
+                self._send(400, {"ok": False, "code": "INVALID_BATCH", "message": str(exc)})
+                return
+            store = SqliteBatchStore(db_path)
+            store.initialize()
+            store.create(request)
+            Thread(target=process_and_persist_batch, args=(request, lambda item: process_batch_item(request.batch_id, item), store), daemon=True).start()
+            self._send(202, {"ok": True, "batch_id": request.batch_id, "state": "PROCESSING", "total_documents": len(request.items)})
 
         def log_message(self, format: str, *args: object) -> None:
             return
