@@ -168,3 +168,18 @@ FAILED -> FAILED
 ## 9. Compatibilidad
 
 El contrato se implementa en `src/blinka/domain/input_models.py` y debe validarse en cada frontera. Cualquier cambio incompatible requiere incrementar `schema_version`, actualizar las pruebas y documentar la migración.
+
+## 10. Frontera del Visual Builder
+
+El agente creado con Visual Builder usa una sola tool local:
+
+```yaml
+tools:
+  - name: blinka_visual_builder.tools.evaluate_invoice
+```
+
+La función `evaluate_invoice(invoice_text)` vive dentro de la carpeta del agente Builder porque ADK resuelve las tools del YAML por nombre completo y mantiene el artefacto editable. La función es un adaptador: llama a `classify_intent`, `classify_source`, `ingest_source`, `evaluate_invoice` y `audit_result` del orquestador existente. No duplica las reglas de negocio.
+
+La tool recibe texto como `UNTRUSTED_DATA`; las líneas no etiquetadas se ignoran durante el parseo y nunca se tratan como instrucciones. Devuelve `PAGAR`, `FRENAR` o `ESCALAR` cuando existe una evaluación, además de `state`, `intake_id`, `reasons`, `issues`, `events` y `moves_money: false`. Un error técnico devuelve `FAILED` y nunca `PAGAR`.
+
+El LLM del Builder puede decidir cuándo solicitar la tool, pero no puede cambiar su resultado. El orquestador programático y el servicio determinista siguen siendo la autoridad de decisión. Esta frontera es válida para la demo local; el adaptador de Agent Runtime deberá llamar posteriormente a la API/Firestore, no depender de SQLite local.
