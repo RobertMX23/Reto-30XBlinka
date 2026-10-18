@@ -23,6 +23,7 @@ from typing import Dict, List, Union
 
 from blinka.domain.models import ExtractionCandidate, RawField, SourceDocument
 from blinka.errors import PathNotAllowedError, SourceNotFoundError, SourceTooLargeError
+from blinka.domain.pdf_boundaries import BoundaryStatus, PdfBoundaryResult, PdfSecurityBoundaryResult, PdfSecurityStatus
 
 ALLOWED_SUFFIX = ".txt"
 PDF_SUFFIX = ".pdf"
@@ -98,6 +99,8 @@ def read_pdf_text_file(
     requested: Union[str, Path],
     *,
     max_bytes: int,
+    max_pages: int = 100,
+    max_extracted_text_bytes: int = 1024 * 1024,
     ingest_key: str | None = None,
 ) -> SourceDocument:
     """Lee un PDF con texto y conserva los bytes originales y su huella."""
@@ -113,11 +116,19 @@ def read_pdf_text_file(
         raise RuntimeError("El adaptador PDF requiere la dependencia pypdf.") from exc
     try:
         reader = PdfReader(path)
-        text = "\n".join((page.extract_text() or "") for page in reader.pages).strip()
+        page_count = len(reader.pages)
+        if page_count == 0:
+            raise ValueError("El PDF no contiene páginas.")
+        if page_count > max_pages:
+            raise SourceTooLargeError(f"El PDF excede el máximo de {max_pages} páginas.")
+        page_texts = [(page.extract_text() or "") for page in reader.pages]
+        text = "\n".join(page_texts).strip()
     except Exception as exc:
         raise ValueError(f"No se pudo leer el PDF: {exc}") from exc
     if not text:
         raise ValueError("El PDF no contiene texto extraíble; requiere OCR.")
+    if len(text.encode("utf-8")) > max_extracted_text_bytes:
+        raise SourceTooLargeError(f"El texto extraído excede {max_extracted_text_bytes} bytes.")
     origin = path.relative_to(invoices_dir.resolve()).as_posix()
     return SourceDocument(
         ingest_key=ingest_key or f"file:{origin}",

@@ -73,6 +73,8 @@ class IntakeService:
                     self._settings.root,
                     req.path,
                     max_bytes=self._settings.max_source_bytes,
+                    max_pages=self._settings.max_pdf_pages,
+                    max_extracted_text_bytes=self._settings.max_extracted_text_bytes,
                     ingest_key=req.ingest_key,
                 )
             return read_source_file(

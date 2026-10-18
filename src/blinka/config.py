@@ -10,6 +10,8 @@ from typing import Mapping, Optional
 from dotenv import load_dotenv
 
 DEFAULT_MAX_SOURCE_BYTES = 256 * 1024
+DEFAULT_MAX_PDF_PAGES = 100
+DEFAULT_MAX_EXTRACTED_TEXT_BYTES = 1024 * 1024
 
 
 @dataclass(frozen=True)
@@ -19,6 +21,8 @@ class Settings:
     reference_dir: Path
     db_path: Path
     max_source_bytes: int = DEFAULT_MAX_SOURCE_BYTES
+    max_pdf_pages: int = DEFAULT_MAX_PDF_PAGES
+    max_extracted_text_bytes: int = DEFAULT_MAX_EXTRACTED_TEXT_BYTES
 
     @classmethod
     def from_env(
@@ -42,4 +46,6 @@ class Settings:
             invoices_dir=_path("BLINKA_INVOICES_DIR", "data/invoices"),
             reference_dir=_path("BLINKA_REFERENCE_DIR", "data/reference"),
             db_path=_path("BLINKA_DB_PATH", "var/blinka.db"),
+            max_pdf_pages=int(env.get("BLINKA_MAX_PDF_PAGES") or DEFAULT_MAX_PDF_PAGES),
+            max_extracted_text_bytes=int(env.get("BLINKA_MAX_EXTRACTED_TEXT_BYTES") or DEFAULT_MAX_EXTRACTED_TEXT_BYTES),
         )
