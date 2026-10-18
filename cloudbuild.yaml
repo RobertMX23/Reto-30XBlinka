@@ -20,5 +20,23 @@ steps:
       - --concurrency=20
       - --allow-unauthenticated
       - --set-env-vars=BLINKA_MEMORY_BACKEND=local,BLINKA_MAX_PDF_PAGES=100,BLINKA_MAX_EXTRACTED_TEXT_BYTES=1048576
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - blinka-worker
+      - --image=us-central1-docker.pkg.dev/$PROJECT_ID/blinka/blinka:$COMMIT_SHA
+      - --region=us-central1
+      - --platform=managed
+      - --port=8080
+      - --min-instances=0
+      - --max-instances=3
+      - --cpu=1
+      - --memory=1Gi
+      - --allow-unauthenticated
+      - --command=uv
+      - --args=run,--no-dev,python,-m,blinka.worker_api
+      - --set-env-vars=BLINKA_STORAGE_BACKEND=firestore,BLINKA_QUEUE_BACKEND=pubsub,BLINKA_MEMORY_BACKEND=local
 images:
   - us-central1-docker.pkg.dev/$PROJECT_ID/blinka/blinka:$COMMIT_SHA
