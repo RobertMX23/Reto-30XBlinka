@@ -8,6 +8,7 @@ from typing import Callable
 
 from blinka.domain.batch_models import BatchItem, BatchRequest, BatchResult, BatchState
 from blinka.domain.input_models import WorkflowState
+from blinka.ports.batch_storage import BatchStore
 
 
 ItemProcessor = Callable[[BatchItem], BatchItem]
@@ -51,3 +52,13 @@ def process_batch(request: BatchRequest, processor: ItemProcessor) -> BatchResul
         items=items,
         completed_at=datetime.now(timezone.utc),
     )
+
+
+def process_and_persist_batch(request: BatchRequest, processor: ItemProcessor, store: BatchStore) -> BatchResult:
+    """Registra el lote antes de procesarlo y persiste el resultado agregado."""
+    store.initialize()
+    existing = store.get(request.batch_id)
+    if existing is not None and existing.state in {BatchState.COMPLETED, BatchState.COMPLETED_WITH_ERRORS}:
+        return existing
+    store.create(request)
+    return store.save(process_batch(request, processor))

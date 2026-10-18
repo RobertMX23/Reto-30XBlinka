@@ -6,7 +6,9 @@ from typing import Any
 
 from blinka.domain.input_models import InputIssue, IntentType, OrchestrationResult, WorkflowState
 from blinka.domain.batch_models import BatchItem, BatchRequest, BatchResult
-from blinka.application.batch import process_batch
+from blinka.application.batch import process_batch, process_and_persist_batch
+from blinka.adapters.sqlite_batch_store import SqliteBatchStore
+from blinka.config import Settings
 from blinka.tools.input_tools import classify_input, preserve_input, validate_supported_input
 from blinka.wiring import build_service
 
@@ -130,3 +132,9 @@ def process_batch_item(batch_id: str, item: BatchItem) -> BatchItem:
 def process_batch_request(request: BatchRequest) -> BatchResult:
     """Fan-out/fan-in local del orquestador; el límite lo define BatchRequest."""
     return process_batch(request, lambda item: process_batch_item(request.batch_id, item))
+
+
+def process_and_persist_batch_request(request: BatchRequest, settings: Settings | None = None) -> BatchResult:
+    settings = settings or Settings.from_env()
+    store = SqliteBatchStore(settings.db_path)
+    return process_and_persist_batch(request, lambda item: process_batch_item(request.batch_id, item), store)
