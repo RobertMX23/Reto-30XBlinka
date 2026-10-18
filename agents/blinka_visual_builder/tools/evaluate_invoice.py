@@ -4,13 +4,28 @@ from __future__ import annotations
 
 from typing import Any
 
-from agents.blinka_orchestrator.nodes import (
-    audit_result,
-    classify_intent,
-    classify_source,
-    evaluate_invoice as evaluate_invoice_node,
-    ingest_source,
-)
+# ADK loads the configured ``agents`` directory as the import root.  Therefore
+# ``blinka_orchestrator`` is the top-level package when the function is called
+# by the Visual Builder.  The fallback keeps direct repository imports and the
+# existing pytest layout working as well.
+try:
+    from blinka_orchestrator.nodes import (
+        audit_result,
+        classify_intent,
+        classify_source,
+        evaluate_invoice as evaluate_invoice_node,
+        ingest_source,
+    )
+except ModuleNotFoundError as exc:  # pragma: no cover - depends on import mode
+    if exc.name != "blinka_orchestrator":
+        raise
+    from agents.blinka_orchestrator.nodes import (
+        audit_result,
+        classify_intent,
+        classify_source,
+        evaluate_invoice as evaluate_invoice_node,
+        ingest_source,
+    )
 
 
 def _issue_payload(issues: list[Any]) -> list[dict[str, Any]]:
@@ -121,4 +136,3 @@ def evaluate_invoice(invoice_text: str) -> dict[str, Any]:
         "receipt": result.get("receipt"),
         "moves_money": False,
     }
-
