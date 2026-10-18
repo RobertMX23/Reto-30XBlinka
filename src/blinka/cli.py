@@ -105,6 +105,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     p_decide.add_argument("intake_id")
     p_decide.add_argument("--adk", action="store_true", help="Ejecutar la decision a traves del workflow ADK.")
 
+    p_batch = sub.add_parser("batch-status", help="Consulta el estado de un lote por ID.")
+    p_batch.add_argument("batch_id")
+
     args = parser.parse_args(argv)
     settings = Settings.from_env()
 
@@ -159,6 +162,13 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             receipt = service.receipt_for(args.intake_id)
             _print({"decision": decision.model_dump(mode="json"), "receipt": receipt.model_dump(mode="json") if receipt else None})
             return 0
+
+        if args.cmd == "batch-status":
+            from blinka.tools.batch_tools import get_batch_status
+
+            payload = get_batch_status(args.batch_id, settings.db_path)
+            _print(payload)
+            return 0 if payload.get("ok") else 2
     except BlinkaError as exc:
         _print({"error": _error_payload(exc)})
         return EXIT_BY_KIND.get(exc.kind, 1)
