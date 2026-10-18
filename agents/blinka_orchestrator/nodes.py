@@ -5,6 +5,8 @@ from __future__ import annotations
 from typing import Any
 
 from blinka.domain.input_models import InputIssue, IntentType, OrchestrationResult, WorkflowState
+from blinka.domain.batch_models import BatchItem, BatchRequest, BatchResult
+from blinka.application.batch import process_batch
 from blinka.tools.input_tools import classify_input, preserve_input, validate_supported_input
 from blinka.wiring import build_service
 
@@ -108,3 +110,23 @@ def audit_result(node_input: dict[str, Any]) -> dict[str, Any]:
         moves_money=False,
     )
     return result.model_dump(mode="json")
+
+
+def process_batch_item(batch_id: str, item: BatchItem) -> BatchItem:
+    """Ejecuta un documento del lote por el mismo camino que una entrada individual."""
+    request = item.request
+    if request.ingest_key is None:
+        request = request.model_copy(update={"ingest_key": f"{batch_id}:{item.document_id}"})
+    classified_intent = classify_intent(request.model_dump(mode="json"))
+    classified = classify_source(classified_intent)
+    ingested = ingest_source(classified)
+    evaluated = evaluate_invoice(ingested)
+    result = audit_result(evaluated)
+    state = WorkflowState(result.get("state", WorkflowState.FAILED))
+    issues = [InputIssue.model_validate(issue) for issue in result.get("issues", [])]
+    return item.model_copy(update={"request": request, "state": state, "result": result, "issues": issues})
+
+
+def process_batch_request(request: BatchRequest) -> BatchResult:
+    """Fan-out/fan-in local del orquestador; el límite lo define BatchRequest."""
+    return process_batch(request, lambda item: process_batch_item(request.batch_id, item))
