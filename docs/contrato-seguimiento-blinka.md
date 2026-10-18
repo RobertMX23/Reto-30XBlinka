@@ -77,7 +77,7 @@ Estados permitidos: `PENDIENTE`, `EN_CURSO`, `BLOQUEADA`, `VALIDADA`, `FUERA_DE_
 | T09 | API Cloud Run | T06, T08 | `Dockerfile`, `cloudbuild.yaml`, endpoints | API y worker desplegados y verificables | VALIDADA |
 | T10 | Frontend Firebase Hosting | T09 | `frontend/`, `firebase.json` | Sitio frontend publicado e integrado con ADK Web | VALIDADA |
 | T11 | Pruebas unitarias, integración, smoke y E2E | T02–T10 | `tests/` y reporte | Happy path y fallos críticos cubiertos | VALIDADA |
-| T12 | Observabilidad y presupuesto | T09 | logs, métricas, alertas | Diagnóstico básico y alerta de costo | PENDIENTE |
+| T12 | Observabilidad y presupuesto | T09 | logs, métricas, alertas | Diagnóstico básico y alerta de costo | PENDIENTE (POST-DEMO) |
 | T13 | HITL para ESCALAR | T02, T10 | contrato de revisión humana | Solicitud, decisión y auditoría de persona | PENDIENTE |
 | T14 | OCR, correo real y RAG Vertex | T06, T07 | adaptadores externos | Escalabilidad posterior | FUERA_DE_ALCANCE |
 
@@ -140,4 +140,4 @@ Pagos reales, conexión bancaria, correo real, OCR avanzado, autenticación de p
 
 ## 11. Regla para el siguiente paso
 
-La siguiente tarea prioritaria es **T12: configurar observabilidad básica y alertas de presupuesto**. Después se abordará T13, la revisión humana para `ESCALAR`.
+T12 queda fuera de la ruta crítica del demo. La siguiente tarea de producto será **T13: revisión humana para `ESCALAR`**; observabilidad avanzada y alertas de presupuesto se retomarán después de la presentación.
