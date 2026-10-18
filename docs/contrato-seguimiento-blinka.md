@@ -75,7 +75,7 @@ Estados permitidos: `PENDIENTE`, `EN_CURSO`, `BLOQUEADA`, `VALIDADA`, `FUERA_DE_
 | T07 | Memoria estructurada | T01, T06 | memory models/projection | Consulta por tenant sin PDF crudo | EN_CURSO |
 | T08 | Pub/Sub para lotes | T04, T06 | contrato, publicador, worker y suscripción | Desacopla cargas y permite reintentos | VALIDADA |
 | T09 | API Cloud Run | T06, T08 | `Dockerfile`, `cloudbuild.yaml`, endpoints | API y worker desplegados y verificables | VALIDADA |
-| T10 | Frontend Firebase Hosting | T09 | `frontend/`, `firebase.json` | Sitio frontend publicado; integración ADK/API posterior | EN_CURSO |
+| T10 | Frontend Firebase Hosting | T09 | `frontend/`, `firebase.json` | Sitio frontend publicado e integrado con ADK Web | VALIDADA |
 | T11 | Pruebas unitarias, integración, smoke y E2E | T02–T10 | `tests/` y reporte | Happy path y fallos críticos cubiertos | EN_CURSO |
 | T12 | Observabilidad y presupuesto | T09 | logs, métricas, alertas | Diagnóstico básico y alerta de costo | PENDIENTE |
 | T13 | HITL para ESCALAR | T02, T10 | contrato de revisión humana | Solicitud, decisión y auditoría de persona | PENDIENTE |
@@ -128,6 +128,7 @@ Cada avance debe registrar:
 | 2026-10-18 | Cloud Run worker | Receptor push HTTP y segundo servicio `blinka-worker` declarados en Cloud Build | Sintaxis validada; despliegue real pendiente | EN_CURSO |
 | 2026-10-18 | Despliegue Cloud Run | `blinka-api` público para demo y `blinka-worker` privado con OIDC desde Pub/Sub | API `/health`: 200; worker sin autenticación directa: 403; suscripción OIDC configurada | VALIDADA |
 | 2026-10-18 | Firebase Hosting | Proyecto Firebase habilitado y carpeta `frontend/` publicada | Hosting URL: `https://blinka-30x-2026.web.app` | EN_CURSO |
+| 2026-10-18 | ADK Web | Servicio `blinka-adk` desplegado y público para la demo; frontend apunta a `/dev-ui/` | `/dev-ui/`: HTTP 200; URL `https://blinka-adk-1024016593251.us-central1.run.app` | VALIDADA |
 | 2026-10-18 | Smoke end to end | Lote sintético `DEMO-20261018-002` atravesó API, Pub/Sub, worker y Firestore | HTTP 202/200; decisión determinista `ESCALAR` por campos faltantes; sin movimiento de dinero | VALIDADA |
 | 2026-10-18 | Despliegue | Dockerfile, Cloud Build y Firebase Hosting declarativo añadidos | Pendiente despliegue real | EN_CURSO |
 
